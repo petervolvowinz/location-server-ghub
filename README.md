@@ -1,2 +1,2 @@
 # location-server
-Vechile to Vehicle location server.
+Vehicle to Vehicle location server.
