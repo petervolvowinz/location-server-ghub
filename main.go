@@ -14,7 +14,7 @@ import (
 
 var detectionQueue *list.List
 
-func handler(w http.ResponseWriter, req *http.Request) {
+func handler_c(w http.ResponseWriter, req *http.Request) {
 
 	json := req.FormValue("gps")
 	log.Println(json)
@@ -25,14 +25,36 @@ func handler(w http.ResponseWriter, req *http.Request) {
 		queue.AddNewPosition(riderObject)
 
 		//go func(w  http.ResponseWriter) {
-			warninglist := queue.RetrieveCollisionList(riderObject)
-		    ajsonlist := queue.RetrieveJSONList(warninglist)
-		    io.WriteString(w,ajsonlist)
-		    log.Info(" sent to client ", ajsonlist)
+		warninglist := queue.RetrieveCollisionList(riderObject)
+		ajsonlist := queue.RetrieveJSONList(warninglist)
+		io.WriteString(w,ajsonlist)
+		log.Info(" sent to client ", ajsonlist)
 		//}(w)
 	}
 
 }
+
+func handler_w(w http.ResponseWriter, req *http.Request) {
+
+	io.WriteString(w,"web overview handler not implemented")
+	/*json := req.FormValue("gps")
+	log.Println(json)
+
+	if (queue.IsValidGPSJsonObject(json)){
+
+		var riderObject = queue.GetGPSLocationObjectFromJSON(json)
+		queue.AddNewPosition(riderObject)
+
+		//go func(w  http.ResponseWriter) {
+		warninglist := queue.RetrieveCollisionList(riderObject)
+		ajsonlist := queue.RetrieveJSONList(warninglist)
+		io.WriteString(w,ajsonlist)
+		log.Info(" sent to client ", ajsonlist)
+		//}(w)
+	}*/
+
+}
+
 
 
 func initObjectVehicleDetectionServer(){
@@ -75,6 +97,7 @@ func main() {
 
 	initObjectVehicleDetectionServer()
 	go Dispose()
-	http.HandleFunc("/addposition", handler)
+	http.HandleFunc("/addposition", handler_c)
+    http.HandleFunc("/retrieve",handler_w)
 	log.Fatal(http.ListenAndServe(":8081", nil))
 }

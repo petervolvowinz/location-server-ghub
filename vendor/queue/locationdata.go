@@ -43,17 +43,41 @@ type Locationdata struct {
 	Latitude  float64 `json:"lat"`
 	Longitude float64 `json:"lng"`
 	Accuracy  float64 `json:"accuracy"`
+	Payload   string  `json:"payload"`
 }
 
 type test struct{
 	More []Locationdata `json:more`
 }
 
+type Climatepayload struct{
+	Ambientemp float64 `json:"ambientemp"`
+	Cabintemp float64 `json:"cabintemp"`
+	Drivertemp float64 `json:"drivertemp"`
+}
 
+type SearchJSON struct{
+	Latitude  float64 `json:"lat"`
+	Longitude float64 `json:"lng"`
+	Distance  int `json:"dist"`
+	TimeSpan  int `json:"timespan"`
+}
 
+func GetClimateJSON(climate Climatepayload) string{
+	bytes,err := json.Marshal(climate)
+	if (err != nil){
+		log.Info("could not marshal climate object into json")
+		return ""
+	}
+	return string(bytes)
+}
 
 var(
 	instance *list.List
+)
+
+var(
+	filter *Filtervalues
 )
 
 // singleton
@@ -61,6 +85,7 @@ func GetQueue() *list.List{
 
 	once.Do(func(){
 		instance = list.New()
+		filter = SetFilterValue(GetFilterValues(),Timedepth,Criticaldistance)
 	})
 
 	return instance
@@ -77,7 +102,7 @@ func AddNewPosition(location GPSLocation){
 
 // helper functions to collect object warning list, e.g bikes or vehicles.
 func withinTime(driver_ts int64,detect_ts int64) bool{
-	return ((driver_ts - detect_ts)/1e+9 < Timedepth)
+	return ((driver_ts - detect_ts)/1e+9 < int64(filter.timespanvalue))
 }
 
 func withinDistance(driver GPSLocation,detect GPSLocation) bool{
@@ -89,8 +114,12 @@ func withinDistance(driver GPSLocation,detect GPSLocation) bool{
 
 	dist := GetApproxDistance2(lat1,long1,lat2,long2)
 
-	return (dist < Criticaldistance)
+	return (dist < float64(filter.distancevalue))
 }
+
+/*func nearbyObject2(driver GPSLocation,detect GPSLocation,vehicletype int,distCheck,timeCheck) bool){
+
+}*/
 
 func nearbyObject(driver GPSLocation,detect GPSLocation,vehicletype int) bool{
 	// if it is the same don't add
@@ -107,6 +136,10 @@ func nearbyObject(driver GPSLocation,detect GPSLocation,vehicletype int) bool{
 
 
 	return false
+}
+
+func SetFilter(fv Filtervalues){
+	filter = &fv
 }
 
 func RetrieveCollisionList(objecttype GPSLocation)[]GPSLocation{
