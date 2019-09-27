@@ -28,6 +28,13 @@ const (
 	Raccoon
 )
 
+type Searchstruct struct{
+	Latitude  float64 `json:"lat"`
+	Longitude float64 `json:"lng"`
+	Distance int64 `json:"distance"`
+	Timespan int64 `json:"timespan"`
+}
+
 type Warninglst struct{
 	Warnings []GPSLocation	`json:warnings`
 }
@@ -198,7 +205,7 @@ func retieree(oldie GPSLocation) bool{
 
 }
 
-func GetJSONFromGPSLocationObject(obj GPSLocation) string{
+func GetJSONFromGPSLocationObject(obj interface{}) string{
 
 	result,err := json.Marshal(obj)
 	if (err != nil){
@@ -227,6 +234,8 @@ func GetGPSLocationObjectFromJSON(ajson string) GPSLocation{
 }
 
 
+
+
 func IsValidGPSJsonObject(ajson string) bool{
 
 	var bytes = []byte(ajson)
@@ -234,6 +243,14 @@ func IsValidGPSJsonObject(ajson string) bool{
 	err := json.Unmarshal(bytes,&gps)
 
 	return (err == nil)
+}
+
+func IsValidSearchJsonObject(ajson string) (bool, *Searchstruct){
+	var bytes = []byte(ajson)
+	srt := &Searchstruct{}
+	err := json.Unmarshal(bytes,&srt)
+
+	return (err == nil),srt
 }
 
 func RetrieveJSONList(warninglist []GPSLocation) string{

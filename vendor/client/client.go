@@ -22,6 +22,17 @@ func getClimatePayload() *queue.Climatepayload{
 	return cl;
 }
 
+func getSearchParam() string{
+	search := &queue.Searchstruct{
+		Latitude:37.387401,
+		Longitude:-122.035179,
+		Distance:200,
+		Timespan:5,
+	}
+
+	return queue.GetJSONFromGPSLocationObject(*search)
+}
+
 func getParam1() string {
 
 	payloadstr := queue.GetClimateJSON(*getClimatePayload())
@@ -105,7 +116,7 @@ func simpleSimulation(ch chan int){
 		log.Info("addposition ", json)
 
 		resp2, err := http.Get("http://localhost:8081/addposition?gps="+json)
-        resp3, err := http.Get("http://localhost:8081/retrieve?search=" )
+        resp3, err := http.Get("http://localhost:8081/retrieve?search="+getSearchParam())
 
         bytes,_ := ioutil.ReadAll(resp3.Body)
         log.Info("retrieve ", string(bytes))

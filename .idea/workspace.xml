@@ -2,9 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="543a507f-7055-4b1c-8a3a-6a433cf4bfb8" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/locationserver_test.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/queue/searchfilter.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/location-server-ghub.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/location-server-ghub.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vendor/client/client.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/client/client.go" afterDir="false" />

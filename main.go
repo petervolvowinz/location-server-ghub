@@ -3,6 +3,8 @@ package main
 import (
 	"container/list"
 	"fmt"
+	"github.com/google/uuid"
+	"google.golang.org/genproto/googleapis/type/quaternion"
 	"queue"
 	"time"
 	log "github.com/sirupsen/logrus"
@@ -34,24 +36,35 @@ func handler_c(w http.ResponseWriter, req *http.Request) {
 
 }
 
+/*
+{
+"lat":<val>  latitude
+"long":<val> longitude
+"time":<val> timespan in seconds
+"dist":<val> distance in meters
+}
+ */
 func handler_w(w http.ResponseWriter, req *http.Request) {
 
-	io.WriteString(w,"web overview handler not implemented")
-	/*json := req.FormValue("gps")
+	json := req.FormValue("search")
 	log.Println(json)
 
-	if (queue.IsValidGPSJsonObject(json)){
+	valid, searchObject := queue.IsValidSearchJsonObject(json)
+	if (valid){
+		fakeGPSSearchObject := &queue.GPSLocation{
+			Location:  queue.Locationdata{
+				Latitude:searchObject.Latitude,
+				Longitude:searchObject.Longitude,
+				Accuracy:1,
+				Payload:"{}",
+			},
+			Gpsobject: 0,
+			Uuid:      uuid.UUID{},
+			Timestamp: 0,
+		}
 
-		var riderObject = queue.GetGPSLocationObjectFromJSON(json)
-		queue.AddNewPosition(riderObject)
-
-		//go func(w  http.ResponseWriter) {
-		warninglist := queue.RetrieveCollisionList(riderObject)
-		ajsonlist := queue.RetrieveJSONList(warninglist)
-		io.WriteString(w,ajsonlist)
-		log.Info(" sent to client ", ajsonlist)
-		//}(w)
-	}*/
+		log.Info(" searching for vehciles within: ",searchObject.Distance )
+	}
 
 }
 
