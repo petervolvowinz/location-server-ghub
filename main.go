@@ -4,9 +4,9 @@ import (
 	"container/list"
 	"fmt"
 	"github.com/google/uuid"
+	log "github.com/sirupsen/logrus"
 	"queue"
 	"time"
-	log "github.com/sirupsen/logrus"
 	//"fmt"
 	"io"
 	"net/http"
@@ -62,7 +62,7 @@ func handler_w(w http.ResponseWriter, req *http.Request) {
 			Timestamp: 0,
 		}
 
-		log.Info(" searching for vehciles within: ",searchObject.Distance )
+		log.Info(" searching for vehciles within: ",fakeGPSSearchObject.Location.Longitude )
 	}
 
 }
