@@ -5,6 +5,14 @@ type Filtervalues struct{
 	timespanvalue int64
 }
 
+type Filter func(a,b,c interface{}) bool
+
+type TimeDistFilter struct{
+	distance int64
+	time int64
+}
+
+
 func GetFilterValues() *Filtervalues{
 	return new(Filtervalues)
 }
@@ -14,3 +22,5 @@ func SetFilterValue(fv *Filtervalues,distancevalue int64,timespanvalue int64) *F
 	fv.timespanvalue = timespanvalue
 	return fv
 }
+
+

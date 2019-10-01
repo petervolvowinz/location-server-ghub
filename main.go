@@ -1,7 +1,6 @@
 package main
 
 import (
-	"container/list"
 	"fmt"
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
@@ -13,24 +12,23 @@ import (
 )
 
 
-var detectionQueue *list.List
 
 func handler_c(w http.ResponseWriter, req *http.Request) {
 
 	json := req.FormValue("gps")
-	log.Println(json)
+	//log.Println(json)
 
 	if (queue.IsValidGPSJsonObject(json)){
 
 		var riderObject = queue.GetGPSLocationObjectFromJSON(json)
+		riderObject.Timestamp = time.Now().UnixNano() // timestamp as soon as we can.
 		queue.AddNewPosition(riderObject)
 
-		//go func(w  http.ResponseWriter) {
 		warninglist := queue.RetrieveCollisionList(riderObject)
 		ajsonlist := queue.RetrieveJSONList(warninglist)
 		io.WriteString(w,ajsonlist)
-		log.Info(" sent to client ", ajsonlist)
-		//}(w)
+
+		//log.Info(" sent to client ", ajsonlist)
 	}
 
 }
@@ -67,11 +65,12 @@ func handler_w(w http.ResponseWriter, req *http.Request) {
 
 }
 
-
-
-func initObjectVehicleDetectionServer(){
-	detectionQueue = queue.GetQueue()
+// to be able to check if it is alive from
+func pingHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("☄ HTTP status code returned!"))
 }
+
 
 // every 15 seconds dispose...
 func Dispose(){
@@ -107,9 +106,11 @@ func doAtimeTest(){
 func main() {
     fmt.Println("starting server ...")
 
-	initObjectVehicleDetectionServer()
 	go Dispose()
+
 	http.HandleFunc("/addposition", handler_c)
     http.HandleFunc("/retrieve",handler_w)
+    http.HandleFunc("/version",pingHandler)
+
 	log.Fatal(http.ListenAndServe(":8081", nil))
 }

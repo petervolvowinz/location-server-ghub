@@ -45,6 +45,7 @@ func getParam1() string {
 		},
 		Gpsobject: queue.Car,
 		Uuid:      uuid.New(),
+		Timestamp: 1,
 	}
 
 	ajson := queue.GetJSONFromGPSLocationObject(*gps)
@@ -116,10 +117,10 @@ func simpleSimulation(ch chan int){
 		log.Info("addposition ", json)
 
 		resp2, err := http.Get("http://localhost:8081/addposition?gps="+json)
-        resp3, err := http.Get("http://localhost:8081/retrieve?search="+getSearchParam())
+       // resp3, err := http.Get("http://localhost:8081/retrieve?search="+getSearchParam())
 
-        bytes,_ := ioutil.ReadAll(resp3.Body)
-        log.Info("retrieve ", string(bytes))
+       // bytes,_ := ioutil.ReadAll(resp3.Body)
+       // log.Info("retrieve ", string(bytes))
 		if err != nil {
 			log.Println(err)
 		}else {

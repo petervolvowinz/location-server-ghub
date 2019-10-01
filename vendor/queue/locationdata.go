@@ -1,8 +1,8 @@
 package queue
 
 import (
-	"container/list"
 	"encoding/json"
+	dll "github.com/emirpasic/gods/lists/doublylinkedlist"
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 	"sync"
@@ -15,7 +15,7 @@ var once sync.Once
 const (
 
 	MaxDetections = 5
-	Expirationtime = 5 // throw away any entries older that this (seconds)
+	Expirationtime = 15 // throw away any entries older that this (seconds)
 	Timedepth = 5 // only consider queue neighbours with in this (seconds)
 
 	Criticaldistance = 200 // The distance to a bike/car where we issue a warning (meters)
@@ -36,7 +36,7 @@ type Searchstruct struct{
 }
 
 type Warninglst struct{
-	Warnings []GPSLocation	`json:warnings`
+	Warnings []interface{}	`json:warnings`
 }
 
 type GPSLocation struct{
@@ -79,8 +79,30 @@ func GetClimateJSON(climate Climatepayload) string{
 	return string(bytes)
 }
 
+
+func withinTimeAndDistanceFilter(a,b,c interface{}) bool {
+
+	c1 := a.(GPSLocation)
+	c2 := b.(GPSLocation)
+	c3 := c.(*TimeDistFilter)
+
+	timespan := c3.time
+	distance := c3.distance
+
+	withinTime := withinTimeSpan(c1.Timestamp,c2.Timestamp,timespan)
+	if (withinTime){
+		withinDistance := withinDistance_2(c1,c2,distance)
+		if (withinDistance){
+			return true
+		}
+	}
+
+	return false
+}
+
+
 var(
-	instance *list.List
+	instance *dll.List
 )
 
 var(
@@ -88,31 +110,43 @@ var(
 )
 
 // singleton
-func GetQueue() *list.List{
+func GetQueue() * dll.List{
 
-	once.Do(func(){
+	/*once.Do(func(){
 		instance = list.New()
 		filter = SetFilterValue(GetFilterValues(),Timedepth,Criticaldistance)
 	})
 
-	return instance
+	return instance*/
+	return GetQueueInstance()
 }
 
 func AddNewPosition(location GPSLocation){
-	location.Timestamp = time.Now().UnixNano()
+	/*location.Timestamp = time.Now().UnixNano()
 	//protect queue
 	queueMutex.Lock()
 	GetQueue().PushFront(location)
 
+	queueMutex.Unlock()*/
+	AddNewPosition_2(location)
+}
+
+func AddNewPosition_2(location GPSLocation){
+	location.Timestamp = time.Now().UnixNano()
+	queueMutex.Lock()
+	Add(location)
 	queueMutex.Unlock()
 }
 
 // helper functions to collect object warning list, e.g bikes or vehicles.
-func withinTime(driver_ts int64,detect_ts int64) bool{
+/*func withinTime(driver_ts int64,detect_ts int64) bool{
 	return ((driver_ts - detect_ts)/1e+9 < int64(filter.timespanvalue))
-}
+}*/
 
-func withinDistance(driver GPSLocation,detect GPSLocation) bool{
+func withinTimeSpan(driver_ts int64,detect_ts int64,timespan int64) bool{
+	return ((driver_ts - detect_ts)/1e+9 < timespan)
+}
+/*func withinDistance(driver GPSLocation,detect GPSLocation) bool{
 	lat1 := driver.Location.Latitude
 	long1 := driver.Location.Longitude
 
@@ -122,13 +156,25 @@ func withinDistance(driver GPSLocation,detect GPSLocation) bool{
 	dist := GetApproxDistance2(lat1,long1,lat2,long2)
 
 	return (dist < float64(filter.distancevalue))
+}*/
+
+func withinDistance_2(driver GPSLocation,detect GPSLocation,distance int64) bool{
+	lat1 := driver.Location.Latitude
+	long1 := driver.Location.Longitude
+
+	lat2 := detect.Location.Latitude
+	long2 := detect.Location.Longitude
+
+	dist := GetApproxDistance2(lat1,long1,lat2,long2)
+
+	return (dist < float64(distance))
 }
 
 /*func nearbyObject2(driver GPSLocation,detect GPSLocation,vehicletype int,distCheck,timeCheck) bool){
 
 }*/
 
-func nearbyObject(driver GPSLocation,detect GPSLocation,vehicletype int) bool{
+/*func nearbyObject(driver GPSLocation,detect GPSLocation,vehicletype int) bool{
 	// if it is the same don't add
 	if (driver.Uuid == detect.Uuid) {
 		return false
@@ -143,15 +189,15 @@ func nearbyObject(driver GPSLocation,detect GPSLocation,vehicletype int) bool{
 
 
 	return false
-}
+}*/
 
 func SetFilter(fv Filtervalues){
 	filter = &fv
 }
 
-func RetrieveCollisionList(objecttype GPSLocation)[]GPSLocation{
+func RetrieveCollisionList(objecttype GPSLocation)[] interface{}{
 
-	queueMutex.Lock()
+	/*queueMutex.Lock()
 
 	var listofdectees []GPSLocation
 
@@ -167,13 +213,29 @@ func RetrieveCollisionList(objecttype GPSLocation)[]GPSLocation{
 	}
 
 	queueMutex.Unlock()
+    */
 
-	return listofdectees
+	return RetrieveCollisionList_2(objecttype,Timedepth,Criticaldistance)
+}
+
+func RetrieveCollisionList_2(objecttype GPSLocation,timed int64,dist int64)[] interface{}{
+
+	queueMutex.Lock()
+
+	timedistfilter := &TimeDistFilter{
+		distance: dist,
+		time:     timed,
+	}
+	listofdectees := FindAll(objecttype,timedistfilter,withinTimeAndDistanceFilter)
+
+	queueMutex.Unlock()
+
+    return listofdectees
 }
 
 //Garbage collection
 func Out(){
-	queueMutex.Lock()
+	/*queueMutex.Lock()
 
 	Q := GetQueue()
 	for i := 0; i < GARBAGESIZE; i++{ // DO GARBAGESIZe removals.
@@ -191,16 +253,34 @@ func Out(){
 		}
 	}
 	log.Println("Q SIZE IS : ", Q.Len())
-	queueMutex.Unlock()
+	queueMutex.Unlock()*/
+	log.Println("Q SIZE IS : ", GetQueueInstance().Size())
+	RemoveOldData()
+	log.Println("Q SIZE IS : ", GetQueueInstance().Size())
+
 }
 
+func RemoveOldData(){
+	queueMutex.Lock()
+
+	Q := GetQueueInstance()
+	index,_ := Q.Find(func(index int, value interface{}) bool{
+		//log.Info(" index ", index)
+		val := retieree(value.(GPSLocation))
+		return val
+	})
+
+	RemoveAll(index)
+
+	queueMutex.Unlock()
+}
 
 func retieree(oldie GPSLocation) bool{
 
 	currentsecond := time.Now().UnixNano()
 	oldiesecond := oldie.Timestamp
 
-	log.Println("time checking ",currentsecond - oldiesecond)
+	log.Println("time checking ",(currentsecond - oldiesecond)/1e+9)
 	return (currentsecond -  oldiesecond)/1e+9 > Expirationtime
 
 }
@@ -253,14 +333,14 @@ func IsValidSearchJsonObject(ajson string) (bool, *Searchstruct){
 	return (err == nil),srt
 }
 
-func RetrieveJSONList(warninglist []GPSLocation) string{
+func RetrieveJSONList(warninglist [] interface{}) string{
 
 	warnings := &Warninglst{warninglist}
 	result,err := json.Marshal(warnings)
 
 
 	if (err != nil){
-		log.Error("could not build json GPSLocation list", err)
+		log.Error("could not build json GPSLocation list ", err)
 		return "{error:" + "json list generation failed}"
 	}
 
