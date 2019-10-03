@@ -66,7 +66,9 @@ func getParam1() string {
 **********************************************************************/
 
 /************ ADD POSITION CALL *******
-http://<IPAdresss>:<POST>/addposition?gps={"Location":{
+http://<IPAdresss>:<POST>/addposition?gps=
+{
+ "Location":{
 		"lat":37.387401,
 		"lng":-122.035179,
         "accuracy":1,
@@ -75,6 +77,23 @@ http://<IPAdresss>:<POST>/addposition?gps={"Location":{
          "Uuid":"8082dc40-6a9f-4eb4-9108-8ae9fcd28cc4",
          "Timestamp":1}
 }
+
+ {
+  "Location": {
+    "accuracy": 20,
+    "Gpsobject": 1,
+    "lat": 37.387177,
+    "lng": -122.034515,
+    "payload": {
+      "ambientemp": 98.0,
+      "cabintemp": 105.0,
+      "drivertemp": 71.0
+    },
+    "Timestamp": 1.570130717554E12,
+    "Uuid": "ce26fae0-83cc-49ba-92da-7f95970d7107"
+  }
+}
+
 ********/
 func getParam2() string {
 	payloadstr := queue.GetClimatepayloadJSON(*getClimatePayload())
@@ -93,6 +112,7 @@ func getParam2() string {
 	ajson := queue.GetGPSLocationJSON(*gps)
 	return ajson
 }
+
 
 
 

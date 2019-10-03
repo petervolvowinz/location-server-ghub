@@ -18,5 +18,10 @@ WORKDIR /app
 
 RUN apk add --no-cache ca-certificates
 COPY --from=build-env /go/src/locationserver /app/
+
+RUN addgroup --gid 1000 go && adduser -D -G go -u 100 go
+RUN chown go ./locationserver
+USER go
+
 ENTRYPOINT  ./locationserver
 
