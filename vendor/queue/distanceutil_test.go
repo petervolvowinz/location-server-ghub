@@ -66,7 +66,7 @@ func TestGetJSONFromGPSLocationObject(t *testing.T) {
 		Timestamp:1,
 	}
 
-	ajson := GetJSONFromGPSLocationObject(*gps)
+	ajson := GetGPSLocationJSON(*gps)
 	bytes := []byte(string(ajson))
 
 	gpsobject := &GPSLocation{}
@@ -83,7 +83,7 @@ func TestGetJSONFromGPSLocationObject(t *testing.T) {
 
 func TestUUID(t *testing.T) {
 
-	uuid := getUUID()
+	uuid := GetUUID()
 	gps := &GPSLocation{
 		Location: Locationdata{
 			Latitude:37.387401,
@@ -99,7 +99,7 @@ func TestUUID(t *testing.T) {
 		t.Error(" error generating uuid ")
 	}
 
-	uuid2 := getUUID()
+	uuid2 := GetUUID()
     if (uuid2 == gps.Uuid){
     	t.Error("uuid not unique")
 	}

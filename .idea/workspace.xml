@@ -2,12 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="543a507f-7055-4b1c-8a3a-6a433cf4bfb8" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/vendor/queue/locationqueue.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/loadbalancetest/loadbalancetest.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/location-server-ghub.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/location-server-ghub.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vendor/client/client.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/client/client.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/queue/distanceutil_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/queue/distanceutil_test.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vendor/queue/locationdata.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/queue/locationdata.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/queue/searchfilter.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/queue/searchfilter.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -59,13 +61,33 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Go Build.go build client.go">
+  <component name="RunManager" selected="Docker.Dockerfile">
     <configuration name="go build client.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true">
       <module name="location-server-ghub" />
       <working_directory value="$PROJECT_DIR$/" />
       <go_parameters value="-i" />
       <kind value="FILE" />
       <filePath value="$PROJECT_DIR$/vendor/client/client.go" />
+      <package value="location-server-ghub" />
+      <directory value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build loadbalancetest.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true">
+      <module name="location-server-ghub" />
+      <working_directory value="$PROJECT_DIR$/" />
+      <go_parameters value="-i" />
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/vendor/loadbalancetest/loadbalancetest.go" />
+      <package value="location-server-ghub" />
+      <directory value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build location-server-ghub" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
+      <module name="location-server-ghub" />
+      <working_directory value="$PROJECT_DIR$/" />
+      <go_parameters value="-i" />
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/" />
       <package value="location-server-ghub" />
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
@@ -103,14 +125,17 @@
     </configuration>
     <list>
       <item itemvalue="Docker.Dockerfile" />
+      <item itemvalue="Go Build.go build loadbalancetest.go" />
+      <item itemvalue="Go Build.go build location-server-ghub" />
       <item itemvalue="Go Build.go build client.go" />
       <item itemvalue="Go Build.go build main.go" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Docker.Dockerfile" />
+        <item itemvalue="Go Build.go build loadbalancetest.go" />
         <item itemvalue="Go Build.go build main.go" />
         <item itemvalue="Go Build.go build client.go" />
-        <item itemvalue="Docker.Dockerfile" />
       </list>
     </recent_temporary>
   </component>
@@ -119,21 +144,35 @@
       <serviceView>
         <option name="contentProportion" value="0.34065935" />
         <treeState>
-          <expand>
-            <path>
-              <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
-              <item name="com.intellij.execution.services.ServiceModel$ServiceNode@61bfa925" type="9fbbdea:ServiceModel$ServiceNode" />
-            </path>
-            <path>
-              <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
-              <item name="com.intellij.execution.services.ServiceModel$ServiceNode@61bfa925" type="9fbbdea:ServiceModel$ServiceNode" />
-              <item name="com.intellij.execution.services.ServiceModel$ServiceNode@e91e5bb" type="9fbbdea:ServiceModel$ServiceNode" />
-            </path>
-          </expand>
+          <expand />
           <select />
         </treeState>
       </serviceView>
     </option>
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand>
+              <path>
+                <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
+                <item name="com.intellij.execution.services.ServiceModel$ServiceNode@61bfa925" type="9fbbdea:ServiceModel$ServiceNode" />
+              </path>
+            </expand>
+            <select />
+          </treeState>
+          <option name="viewType" value="contributor" />
+          <option name="roots">
+            <list>
+              <ServiceState>
+                <option name="contributor" value="com.intellij.docker.view.DockerServiceViewContributor" />
+              </ServiceState>
+            </list>
+          </option>
+        </serviceView>
+      </list>
+    </option>
+    <option name="selectedView" value="0" />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />

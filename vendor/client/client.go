@@ -30,12 +30,12 @@ func getSearchParam() string{
 		Timespan:5,
 	}
 
-	return queue.GetJSONFromGPSLocationObject(*search)
+	return queue.GetGeneralJSON(search)
 }
 
 func getParam1() string {
 
-	payloadstr := queue.GetClimateJSON(*getClimatePayload())
+	payloadstr := queue.GetClimatepayloadJSON(*getClimatePayload())
 	gps := &queue.GPSLocation{
 		Location: queue.Locationdata{
 			Latitude:  37.387401,
@@ -48,7 +48,7 @@ func getParam1() string {
 		Timestamp: 1,
 	}
 
-	ajson := queue.GetJSONFromGPSLocationObject(*gps)
+	ajson := queue.GetGPSLocationJSON(*gps)
 	return ajson
 }
 
@@ -77,7 +77,7 @@ http://<IPAdresss>:<POST>/addposition?gps={"Location":{
 }
 ********/
 func getParam2() string {
-	payloadstr := queue.GetClimateJSON(*getClimatePayload())
+	payloadstr := queue.GetClimatepayloadJSON(*getClimatePayload())
 	gps := &queue.GPSLocation{
 		Location: queue.Locationdata{
 			Latitude:  37.387401,
@@ -90,7 +90,7 @@ func getParam2() string {
 		Timestamp: 1,
 	}
 
-	ajson := queue.GetJSONFromGPSLocationObject(*gps)
+	ajson := queue.GetGPSLocationJSON(*gps)
 	return ajson
 }
 
@@ -117,10 +117,11 @@ func simpleSimulation(ch chan int){
 		log.Info("addposition ", json)
 
 		resp2, err := http.Get("http://localhost:8081/addposition?gps="+json)
-       // resp3, err := http.Get("http://localhost:8081/retrieve?search="+getSearchParam())
+        resp3, err := http.Get("http://localhost:8081/retrieve?search="+getSearchParam())
 
-       // bytes,_ := ioutil.ReadAll(resp3.Body)
-       // log.Info("retrieve ", string(bytes))
+        bytes,_ := ioutil.ReadAll(resp3.Body)
+        log.Info("retrieve ", string(bytes))
+
 		if err != nil {
 			log.Println(err)
 		}else {

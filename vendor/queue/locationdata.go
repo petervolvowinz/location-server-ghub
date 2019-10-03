@@ -13,19 +13,20 @@ var queueMutex = &sync.Mutex{}
 var once sync.Once
 
 const (
-
-	MaxDetections = 5
 	Expirationtime = 15 // throw away any entries older that this (seconds)
 	Timedepth = 5 // only consider queue neighbours with in this (seconds)
-
 	Criticaldistance = 200 // The distance to a bike/car where we issue a warning (meters)
-	GARBAGESIZE = 5
 )
 
 const (
 	Bike int = iota
 	Car
 	Raccoon
+)
+
+var(
+	instance *dll.List
+	filter *Filtervalues
 )
 
 type Searchstruct struct{
@@ -53,9 +54,6 @@ type Locationdata struct {
 	Payload   string  `json:"payload"`
 }
 
-type test struct{
-	More []Locationdata `json:more`
-}
 
 type Climatepayload struct{
 	Ambientemp float64 `json:"ambientemp"`
@@ -70,14 +68,6 @@ type SearchJSON struct{
 	TimeSpan  int `json:"timespan"`
 }
 
-func GetClimateJSON(climate Climatepayload) string{
-	bytes,err := json.Marshal(climate)
-	if (err != nil){
-		log.Info("could not marshal climate object into json")
-		return ""
-	}
-	return string(bytes)
-}
 
 
 func withinTimeAndDistanceFilter(a,b,c interface{}) bool {
@@ -91,7 +81,7 @@ func withinTimeAndDistanceFilter(a,b,c interface{}) bool {
 
 	withinTime := withinTimeSpan(c1.Timestamp,c2.Timestamp,timespan)
 	if (withinTime){
-		withinDistance := withinDistance_2(c1,c2,distance)
+		withinDistance := withinDistance(c1,c2,distance)
 		if (withinDistance){
 			return true
 		}
@@ -101,64 +91,33 @@ func withinTimeAndDistanceFilter(a,b,c interface{}) bool {
 }
 
 
-var(
-	instance *dll.List
-)
 
-var(
-	filter *Filtervalues
-)
 
 // singleton
 func GetQueue() * dll.List{
-
-	/*once.Do(func(){
-		instance = list.New()
-		filter = SetFilterValue(GetFilterValues(),Timedepth,Criticaldistance)
-	})
-
-	return instance*/
 	return GetQueueInstance()
 }
 
 func AddNewPosition(location GPSLocation){
-	/*location.Timestamp = time.Now().UnixNano()
-	//protect queue
-	queueMutex.Lock()
-	GetQueue().PushFront(location)
-
-	queueMutex.Unlock()*/
 	AddNewPosition_2(location)
 }
 
 func AddNewPosition_2(location GPSLocation){
 	location.Timestamp = time.Now().UnixNano()
+
 	queueMutex.Lock()
-	Add(location)
+
+	Add(location) // add entry first...
+
 	queueMutex.Unlock()
 }
-
-// helper functions to collect object warning list, e.g bikes or vehicles.
-/*func withinTime(driver_ts int64,detect_ts int64) bool{
-	return ((driver_ts - detect_ts)/1e+9 < int64(filter.timespanvalue))
-}*/
 
 func withinTimeSpan(driver_ts int64,detect_ts int64,timespan int64) bool{
 	return ((driver_ts - detect_ts)/1e+9 < timespan)
 }
-/*func withinDistance(driver GPSLocation,detect GPSLocation) bool{
-	lat1 := driver.Location.Latitude
-	long1 := driver.Location.Longitude
 
-	lat2 := detect.Location.Latitude
-	long2 := detect.Location.Longitude
 
-	dist := GetApproxDistance2(lat1,long1,lat2,long2)
-
-	return (dist < float64(filter.distancevalue))
-}*/
-
-func withinDistance_2(driver GPSLocation,detect GPSLocation,distance int64) bool{
+func withinDistance(driver GPSLocation,detect GPSLocation,distance int64) bool{
 	lat1 := driver.Location.Latitude
 	long1 := driver.Location.Longitude
 
@@ -170,50 +129,8 @@ func withinDistance_2(driver GPSLocation,detect GPSLocation,distance int64) bool
 	return (dist < float64(distance))
 }
 
-/*func nearbyObject2(driver GPSLocation,detect GPSLocation,vehicletype int,distCheck,timeCheck) bool){
-
-}*/
-
-/*func nearbyObject(driver GPSLocation,detect GPSLocation,vehicletype int) bool{
-	// if it is the same don't add
-	if (driver.Uuid == detect.Uuid) {
-		return false
-	}
-
-	// don't need to check type its going to be mutual exclusive
-	if (withinTime(driver.Timestamp,detect.Timestamp)){
-		if withinDistance(driver,detect){
-			return true
-		}
-	}
-
-
-	return false
-}*/
-
-func SetFilter(fv Filtervalues){
-	filter = &fv
-}
 
 func RetrieveCollisionList(objecttype GPSLocation)[] interface{}{
-
-	/*queueMutex.Lock()
-
-	var listofdectees []GPSLocation
-
-    list := GetQueue()
-
-	for element := list.Front();element != nil;element = element.Next(){
-		var detectee = element.Value.(GPSLocation)
-		if nearbyObject(objecttype,detectee,objecttype.Gpsobject){
-			listofdectees = append(listofdectees, detectee)
-			log.Info(" collisions " , len(listofdectees))
-		}
-
-	}
-
-	queueMutex.Unlock()
-    */
 
 	return RetrieveCollisionList_2(objecttype,Timedepth,Criticaldistance)
 }
@@ -233,31 +150,11 @@ func RetrieveCollisionList_2(objecttype GPSLocation,timed int64,dist int64)[] in
     return listofdectees
 }
 
-//Garbage collection
+//Garbage collection, just pick the last one if it is eligeable
 func Out(){
-	/*queueMutex.Lock()
-
-	Q := GetQueue()
-	for i := 0; i < GARBAGESIZE; i++{ // DO GARBAGESIZe removals.
-		if Q.Len() > 0 {
-			element := Q.Back()
-
-			item := element.Value.(GPSLocation)
-			if retieree(item) {
-				log.Info("expired : ", item.Timestamp)
-				Q.Remove(element)
-			}
-
-		} else {
-			break;
-		}
-	}
-	log.Println("Q SIZE IS : ", Q.Len())
-	queueMutex.Unlock()*/
-	log.Println("Q SIZE IS : ", GetQueueInstance().Size())
-	RemoveOldData()
-	log.Println("Q SIZE IS : ", GetQueueInstance().Size())
-
+	// RemoveOldData()
+	RemoveLast()
+	log.Info("Q SIZE IS : ", GetQueueInstance().Size())
 }
 
 func RemoveOldData(){
@@ -275,6 +172,19 @@ func RemoveOldData(){
 	queueMutex.Unlock()
 }
 
+func RemoveLast(){
+	queueMutex.Lock()
+
+	Q := GetQueueInstance()
+	it := Q.Iterator()
+
+	if it.Last() && retieree(it.Value().(GPSLocation)){
+		Q.Remove(Q.Size() -1 )
+	}
+
+	queueMutex.Unlock()
+}
+
 func retieree(oldie GPSLocation) bool{
 
 	currentsecond := time.Now().UnixNano()
@@ -285,22 +195,44 @@ func retieree(oldie GPSLocation) bool{
 
 }
 
-func GetJSONFromGPSLocationObject(obj interface{}) string{
 
-	result,err := json.Marshal(obj)
+/***************************
+ 	JSON marshal and unmarshal
+**************************/
+
+// Returns a JSON string of a Climatepayload struct
+func GetClimatepayloadJSON(climate Climatepayload) string{
+	bytes,err := json.Marshal(climate)
+	if (err != nil){
+		log.Info("could not marshal climate object into json")
+		return ""
+	}
+	return string(bytes)
+}
+
+// Returns a JSON string of a GPSLocation JSON
+func GetGPSLocationJSON(gps GPSLocation) string{
+
+	bytes,err := json.Marshal(gps)
 	if (err != nil){
 		log.Error(" json not marshalled ", err)
 	}
 
-	return string(result)
+	return string(bytes)
 }
 
-// getUUID
-func getUUID()(uuid.UUID){
-	 return uuid.New()
+func GetGeneralJSON(str interface{}) string{
+
+	bytes,err := json.Marshal(str)
+	if (err != nil){
+		log.Error(" json not marshalled ", err)
+	}
+
+	return string(bytes)
 }
-//GetGPSLocationObjectFromJSON
-func GetGPSLocationObjectFromJSON(ajson string) GPSLocation{
+
+//Returns a GPSLocation struct from JSON
+func GetGPSLocationFromJSON(ajson string) GPSLocation{
 
 	var bytes = []byte(string(ajson))
 	gps := &GPSLocation{}
@@ -309,23 +241,21 @@ func GetGPSLocationObjectFromJSON(ajson string) GPSLocation{
 		log.Error("invalid json ", err)
 	}
 
-    gps.Uuid = getUUID()
 	return *gps
 }
 
-
-
-
-func IsValidGPSJsonObject(ajson string) bool{
+// Returns true if JSON is a GPSLocation struct and returns the struct
+func IsValidGPSLocationJSON(ajson string) (bool, *GPSLocation){
 
 	var bytes = []byte(ajson)
 	gps := &GPSLocation{}
 	err := json.Unmarshal(bytes,&gps)
 
-	return (err == nil)
+	return (err == nil),gps
 }
 
-func IsValidSearchJsonObject(ajson string) (bool, *Searchstruct){
+// Returns true if JSON is a Searchstruct struct and returns the struct
+func IsValidSearchstructJSON(ajson string) (bool, *Searchstruct){
 	var bytes = []byte(ajson)
 	srt := &Searchstruct{}
 	err := json.Unmarshal(bytes,&srt)
@@ -333,7 +263,9 @@ func IsValidSearchJsonObject(ajson string) (bool, *Searchstruct){
 	return (err == nil),srt
 }
 
-func RetrieveJSONList(warninglist [] interface{}) string{
+
+// Returns a json of a warningslist array of Warninglst structs
+func GetWarninglistJSON(warninglist [] interface{}) string{
 
 	warnings := &Warninglst{warninglist}
 	result,err := json.Marshal(warnings)
@@ -346,3 +278,14 @@ func RetrieveJSONList(warninglist [] interface{}) string{
 
 	return string(result)
 }
+
+// Returns a new UUID
+func GetUUID()(uuid.UUID){
+	 return uuid.New()
+}
+
+
+
+
+
+

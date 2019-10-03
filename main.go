@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 	"queue"
@@ -13,22 +12,29 @@ import (
 
 
 
-func handler_c(w http.ResponseWriter, req *http.Request) {
+func handleNewEntries(w http.ResponseWriter, req *http.Request) {
+
+	log.Info("trying to connect")
 
 	json := req.FormValue("gps")
-	//log.Println(json)
 
-	if (queue.IsValidGPSJsonObject(json)){
+	valid,riderObject := queue.IsValidGPSLocationJSON(json)
+	log.Info(json)
+	if (valid){
 
-		var riderObject = queue.GetGPSLocationObjectFromJSON(json)
 		riderObject.Timestamp = time.Now().UnixNano() // timestamp as soon as we can.
-		queue.AddNewPosition(riderObject)
+		queue.AddNewPosition(*riderObject)
 
-		warninglist := queue.RetrieveCollisionList(riderObject)
-		ajsonlist := queue.RetrieveJSONList(warninglist)
+		warninglist := queue.RetrieveCollisionList(*riderObject)
+		ajsonlist := queue.GetWarninglistJSON(warninglist)
+
+        w.WriteHeader(http.StatusOK)
 		io.WriteString(w,ajsonlist)
 
-		//log.Info(" sent to client ", ajsonlist)
+	}else {
+		log.Info("Invalid json sent from client")
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w,"server could not parse json parameter")
 	}
 
 }
@@ -41,14 +47,14 @@ func handler_c(w http.ResponseWriter, req *http.Request) {
 "dist":<val> distance in meters
 }
  */
-func handler_w(w http.ResponseWriter, req *http.Request) {
+func handleGPSFence(w http.ResponseWriter, req *http.Request) {
 
 	json := req.FormValue("search")
 	log.Println(json)
 
-	valid, searchObject := queue.IsValidSearchJsonObject(json)
+	valid, searchObject := queue.IsValidSearchstructJSON(json)
 	if (valid){
-		fakeGPSSearchObject := &queue.GPSLocation{
+		GPSSearchObject := &queue.GPSLocation{
 			Location:  queue.Locationdata{
 				Latitude:searchObject.Latitude,
 				Longitude:searchObject.Longitude,
@@ -57,10 +63,15 @@ func handler_w(w http.ResponseWriter, req *http.Request) {
 			},
 			Gpsobject: 0,
 			Uuid:      uuid.UUID{},
-			Timestamp: 0,
+			Timestamp: time.Now().UnixNano(),
 		}
 
-		log.Info(" searching for vehciles within: ",fakeGPSSearchObject.Location.Longitude )
+		//timespan := searchObject.Timespan
+		//distance := searchObject.Distance
+
+
+		log.Info(" searching for vehciles within: ",GPSSearchObject.Location.Longitude )
+
 	}
 
 }
@@ -68,15 +79,15 @@ func handler_w(w http.ResponseWriter, req *http.Request) {
 // to be able to check if it is alive from
 func pingHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("☄ HTTP status code returned!"))
+	w.Write([]byte(" HTTP status code returned!"))
 }
 
 
-// every 15 seconds dispose...
+// every 100 ms seconds dispose...
 func Dispose(){
 	for {
 		queue.Out()
-		var sleep = time.Second*queue.Expirationtime
+		var sleep = time.Millisecond*100
 		time.Sleep(sleep)
 	}
 }
@@ -104,13 +115,15 @@ func doAtimeTest(){
 }
 
 func main() {
-    fmt.Println("starting server ...")
+    log.Info("starting server ...")
 
 	go Dispose()
 
-	http.HandleFunc("/addposition", handler_c)
-    http.HandleFunc("/retrieve",handler_w)
+	http.HandleFunc("/addposition", handleNewEntries)
+    http.HandleFunc("/retrieve",handleGPSFence)
     http.HandleFunc("/version",pingHandler)
 
 	log.Fatal(http.ListenAndServe(":8081", nil))
+
+    log.Info("closing server down ... ")
 }

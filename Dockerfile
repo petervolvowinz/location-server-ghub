@@ -7,6 +7,7 @@ ADD ./vendor/queue /go/src/queue
 RUN apk add --no-cache git
 RUN go get -d -v github.com/google/uuid
 RUN go get -d -v github.com/sirupsen/logrus
+RUN go get -d -v github.com/emirpasic/gods/lists/doublylinkedlist
 
 
 RUN cd /go/src && CGO_ENABLED=0 go build -o locationserver
