@@ -50,7 +50,7 @@ func handleNewEntries(w http.ResponseWriter, req *http.Request) {
 func handleGPSFence(w http.ResponseWriter, req *http.Request) {
 
 	json := req.FormValue("search")
-	log.Println(json)
+	log.Info(json)
 
 	valid, searchObject := queue.IsValidSearchstructJSON(json)
 	if (valid){
@@ -69,9 +69,17 @@ func handleGPSFence(w http.ResponseWriter, req *http.Request) {
 		//timespan := searchObject.Timespan
 		//distance := searchObject.Distance
 
+		list := queue.RetrieveCollisionList_2(*GPSSearchObject,searchObject.Timespan,searchObject.Distance)
+		json := queue.ConvertToMapBoxFreindlyJSON(list)
 
-		log.Info(" searching for vehciles within: ",GPSSearchObject.Location.Longitude )
-
+		if (json == ""){
+			log.Info("Invalid json sent from client")
+			w.WriteHeader(http.StatusBadRequest)
+			io.WriteString(w,"server could not parse json parameter")
+		}else {
+			w.WriteHeader(http.StatusOK)
+			io.WriteString(w, json)
+		}
 	}
 
 }

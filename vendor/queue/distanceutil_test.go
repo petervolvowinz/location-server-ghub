@@ -2,6 +2,7 @@ package queue
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/google/uuid"
 	"math"
 	"testing"
@@ -103,6 +104,41 @@ func TestUUID(t *testing.T) {
     if (uuid2 == gps.Uuid){
     	t.Error("uuid not unique")
 	}
+}
+
+func TestWebJSON(t *testing.T){
+
+	features := &feature{
+		Type: "Feature",
+		Properties: properties{
+			Ambtemp:    80,
+			Cabintemp:  75,
+			Drivertemp: 68,
+			Day:        "Fri",
+			Time:       "10:00",
+			Icontype:   "Car",
+			UUID:       uuid.New(),
+		},
+		Geometry: geometry{
+			Type:"Point",
+			Coordinates:[]float64{-122.0349794626236,
+				37.387971267871},
+		},
+	}
+
+	featurecollection := &featureCollection{
+		Type: "FeatureCollection",
+		Features:          []feature{*features,*features},
+	}
+
+
+	bytes,err := json.Marshal(featurecollection)
+	if (err != nil){
+		t.Error(" json not marshalled ", err)
+	}
+
+	fmt.Println(string(bytes))
+
 }
 
 

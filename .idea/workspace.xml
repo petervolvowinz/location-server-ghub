@@ -2,7 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="543a507f-7055-4b1c-8a3a-6a433cf4bfb8" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/queue/mapboxconvutil.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/queue/distanceutil_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/queue/distanceutil_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/queue/locationdata.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/queue/locationdata.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -94,6 +99,16 @@
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
+    <configuration name="distanceutil_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="location-server-ghub" />
+      <working_directory value="$PROJECT_DIR$/vendor/queue" />
+      <framework value="gotest" />
+      <kind value="FILE" />
+      <package value="location-server-ghub" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/vendor/queue/distanceutil_test.go" />
+      <method v="2" />
+    </configuration>
     <configuration name="Dockerfile" type="docker-deploy" factoryName="dockerfile" temporary="true" server-name="Docker">
       <deployment type="dockerfile">
         <settings>
@@ -118,14 +133,16 @@
     </configuration>
     <list>
       <item itemvalue="Docker.Dockerfile" />
-      <item itemvalue="Go Build.go build loadbalancetest.go" />
       <item itemvalue="Go Build.go build location-server-ghub" />
+      <item itemvalue="Go Build.go build loadbalancetest.go" />
       <item itemvalue="Go Build.go build client.go" />
       <item itemvalue="Go Build.go build main.go" />
+      <item itemvalue="Go Test.distanceutil_test.go" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Docker.Dockerfile" />
+        <item itemvalue="Go Test.distanceutil_test.go" />
         <item itemvalue="Go Build.go build main.go" />
         <item itemvalue="Go Build.go build loadbalancetest.go" />
         <item itemvalue="Go Build.go build client.go" />
@@ -150,12 +167,7 @@
             <expand>
               <path>
                 <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
-                <item name="com.intellij.execution.services.ServiceModel$ServiceNode@61bfa925" type="9fbbdea:ServiceModel$ServiceNode" />
-              </path>
-              <path>
-                <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
-                <item name="com.intellij.execution.services.ServiceModel$ServiceNode@61bfa925" type="9fbbdea:ServiceModel$ServiceNode" />
-                <item name="com.intellij.execution.services.ServiceModel$ServiceNode@e91e5bb" type="9fbbdea:ServiceModel$ServiceNode" />
+                <item name="com.intellij.execution.services.ServiceModel$ServiceNode@41fc9cee" type="9fbbdea:ServiceModel$ServiceNode" />
               </path>
             </expand>
             <select />
@@ -181,21 +193,12 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
     </option>
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/main.go</url>
-          <line>18</line>
-          <option name="timeStamp" value="27" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
