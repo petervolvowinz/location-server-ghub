@@ -2,7 +2,6 @@ package queue
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/google/uuid"
 	"math"
 	"testing"
@@ -106,6 +105,81 @@ func TestUUID(t *testing.T) {
 	}
 }
 
+
+/*
+{
+    "type": "FeatureCollection",
+    "features": [{
+        "type": "Feature",
+        "properties": {
+            "ambienttemp": 80,
+            "cabintemp": 75,
+            "drivertemp": 68,
+            "Day": "Fri",
+            "Time": "10:00",
+            "Icontype": "Car",
+            "UUID": "dfdfdf"
+        },
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-122.0349794626236, 37.387971267871]
+        }
+    }, {
+        "type": "Feature",
+        "properties": {
+            "ambienttemp": 80,
+            "cabintemp": 75,
+            "drivertemp": 68,
+            "Day": "Fri",
+            "Time": "10:00",
+            "Icontype": "Car",
+            "UUID": "dfdfdf"
+        },
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-122.0349794626236, 37.387971267871]
+        }
+    }]
+}
+ */
+
+func gettestWebJSON() string {
+	return `{
+		"type": "FeatureCollection",
+			"features": [{
+			"type": "Feature",
+			"properties": {
+				"ambienttemp": 80,
+				"cabintemp": 75,
+				"drivertemp": 68,
+				"Day": "Fri",
+				"Time": "10:00",
+				"Icontype": "Car",
+				"UUID": "2d998dc6-0b66-4d27-aeb5-dccbd73489c1"
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [-122.0349794626236, 37.387971267871]
+			}
+		}, {
+			"type": "Feature",
+				"properties": {
+				"ambienttemp": 80,
+					"cabintemp": 75,
+					"drivertemp": 68,
+					"Day": "Fri",
+					"Time": "10:00",
+					"Icontype": "Car",
+					"UUID": "2d998dc6-0b66-4d27-aeb5-dccbd73489c1"
+			},
+			"geometry": {
+				"type": "Point",
+					"coordinates": [-122.0349794626236, 37.387971267871]
+}
+}]
+}`
+
+}
 func TestWebJSON(t *testing.T){
 
 	features := &feature{
@@ -137,7 +211,19 @@ func TestWebJSON(t *testing.T){
 		t.Error(" json not marshalled ", err)
 	}
 
-	fmt.Println(string(bytes))
+	jsonstring := gettestWebJSON()
+	bytes = []byte(string(jsonstring))
+
+	featurecollectionfromjsonstring := &featureCollection{}
+	err = json.Unmarshal(bytes,featurecollectionfromjsonstring)
+
+	if (err != nil){
+		t.Error(" json string not unmarshalled to featureCollection ", err)
+	}
+	if (featurecollectionfromjsonstring.Type != featurecollection.Type){
+		t.Error(" featurecollection josn to object is not marshalled correctly " )
+	}
+
 
 }
 

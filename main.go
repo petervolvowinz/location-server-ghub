@@ -32,7 +32,7 @@ func handleNewEntries(w http.ResponseWriter, req *http.Request) {
 		io.WriteString(w,ajsonlist)
 
 	}else {
-		log.Info("Invalid json sent from client")
+		log.Info("Invalid json sent from mob client")
 		w.WriteHeader(http.StatusBadRequest)
 		io.WriteString(w,"server could not parse json parameter")
 	}
@@ -73,7 +73,7 @@ func handleGPSFence(w http.ResponseWriter, req *http.Request) {
 		json := queue.ConvertToMapBoxFreindlyJSON(list)
 
 		if (json == ""){
-			log.Info("Invalid json sent from client")
+			log.Info("Invalid json sent from web client")
 			w.WriteHeader(http.StatusBadRequest)
 			io.WriteString(w,"server could not parse json parameter")
 		}else {
