@@ -56,7 +56,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Go Test.distanceutil_test.go">
+  <component name="RunManager" selected="Docker.Dockerfile">
     <configuration name="go build client.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true">
       <module name="location-server-ghub" />
       <working_directory value="$PROJECT_DIR$/" />
@@ -138,8 +138,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Test.distanceutil_test.go" />
         <item itemvalue="Docker.Dockerfile" />
+        <item itemvalue="Go Test.distanceutil_test.go" />
         <item itemvalue="Go Build.go build main.go" />
         <item itemvalue="Go Build.go build loadbalancetest.go" />
         <item itemvalue="Go Build.go build client.go" />
