@@ -62,7 +62,7 @@ func handleGPSFence(w http.ResponseWriter, req *http.Request) {
 				Payload:"{}",
 			},
 			Gpsobject: 0,
-			Uuid:      uuid.UUID{},
+			UUID:      uuid.UUID{},
 			Timestamp: time.Now().UnixNano(),
 		}
 
@@ -80,6 +80,9 @@ func handleGPSFence(w http.ResponseWriter, req *http.Request) {
 			w.WriteHeader(http.StatusOK)
 			io.WriteString(w, json)
 		}
+	}else{
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w,"server not valid json parameter")
 	}
 
 }
@@ -87,7 +90,7 @@ func handleGPSFence(w http.ResponseWriter, req *http.Request) {
 // to be able to check if it is alive from
 func pingHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(" HTTP status code returned running: release-0.0.3-demo "))
+	w.Write([]byte(" HTTP status code returned running: release-0.0.4-demo "))
 }
 
 

@@ -11,6 +11,37 @@ import (
 )
 
 
+const (
+	serverurl = "https://locationserver.uswest2.development.volvo.care/addposition?gps="
+	serverurl2 = "https://locationserver.uswest2.development.volvo.care/retrieve?search="
+	localurl  = "http://localhost:8081/addposition?gps="
+	localurl2  = "http://localhost:8081/retrieve?search="
+)
+
+
+type  latlng struct {
+	lat float64
+	lng float64
+}
+
+func generatePositionsAlongPastoriaAvenue()[] latlng{
+	var list []  latlng
+
+
+	k := 0.325603
+	m := -134.2086114
+
+    // Generate positions
+	for startx := 37.38755 ; startx < 37.390784 ; startx = startx + 0.0001{
+		alatlnng := &latlng{
+			lat: startx,
+			lng: k*startx - m, // equation of the line...
+		}
+		list = append(list, *alatlnng)
+	}
+
+	return list
+}
 
 func getClimatePayload() *queue.Climatepayload{
 	cl := &queue.Climatepayload{
@@ -44,7 +75,7 @@ func getParam1() string {
 			Payload:payloadstr,
 		},
 		Gpsobject: queue.Car,
-		Uuid:      uuid.New(),
+		UUID:      uuid.New(),
 		Timestamp: 1,
 	}
 
@@ -119,7 +150,7 @@ func getParam2() string {
 func simpleSimulation(ch chan int){
 	for {
 		json := getParam1()
-		resp1, err := http.Get("http://localhost:8081/addposition?gps="+json)
+		resp1, err := http.Get(localurl+json)
 		if err != nil {
 			log.Println(err)
 		}else {
@@ -136,8 +167,8 @@ func simpleSimulation(ch chan int){
 		json = getParam2()
 		log.Info("addposition ", json)
 
-		resp2, err := http.Get("http://localhost:8081/addposition?gps="+json)
-        resp3, err := http.Get("http://localhost:8081/retrieve?search="+getSearchParam())
+		resp2, err := http.Get(localurl+json)
+        resp3, err := http.Get(localurl2+getSearchParam())
 
         bytes,_ := ioutil.ReadAll(resp3.Body)
         log.Info("retrieve ", string(bytes))

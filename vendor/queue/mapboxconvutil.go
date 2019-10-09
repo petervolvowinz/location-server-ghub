@@ -45,14 +45,14 @@ func ConvertToMapBoxFreindlyJSON(hits [] interface{}) string{
 				Ambtemp:    70,
 				Cabintemp:  75,
 				Drivertemp: 75,
-				Day:        "10",
-				Time:       "10:00",
-				Icontype:   "Car",
-				UUID:       gps.Uuid,
+				Day:        "Fri",
+				 Time:       "10:00",
+				Icontype:   "car",
+				UUID:       gps.UUID,
 			},
 			Geometry: geometry{
-				Type:        "geometry",
-				Coordinates: []float64{gps.Location.Latitude,gps.Location.Longitude},
+				Type:        "Point",
+				Coordinates: []float64{gps.Location.Longitude,gps.Location.Latitude},
 			},
 		}
 		features = append(features, *afeature)
