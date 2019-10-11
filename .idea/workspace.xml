@@ -3,14 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="543a507f-7055-4b1c-8a3a-6a433cf4bfb8" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/client/client.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/client/client.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/loadbalancetest/loadbalancetest.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/loadbalancetest/loadbalancetest.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/queue/distanceutil_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/queue/distanceutil_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/queue/locationdata.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/queue/locationdata.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/queue/locationqueue.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/queue/locationqueue.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/queue/mapboxconvutil.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/queue/mapboxconvutil.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/queue/searchfilter.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/queue/searchfilter.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
