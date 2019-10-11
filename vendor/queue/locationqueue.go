@@ -32,8 +32,11 @@ func FindAll(comparee interface{},filterdata interface{},comparator Filter)[] in
 
 	iterator := queueinstance.Iterator()
 	for iterator.Next() { //TODO we actually could stop when we have passed the timespan...
-		if (comparator(iterator.Value(),comparee,filterdata)){
+		compresult := comparator(iterator.Value(),comparee,filterdata)
+		if (compresult == 1){
 			resultarray = append(resultarray, iterator.Value())
+		}else if (compresult == -1){ // do not search passed timespan
+			break;
 		}
 	}
 

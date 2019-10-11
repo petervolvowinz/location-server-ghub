@@ -5,7 +5,7 @@ type Filtervalues struct{
 	timespanvalue int64
 }
 
-type Filter func(a,b,c interface{}) bool
+type Filter func(a,b,c interface{}) int
 
 type TimeDistFilter struct{
 	distance int64

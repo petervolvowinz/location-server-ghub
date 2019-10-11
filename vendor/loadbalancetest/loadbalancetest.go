@@ -35,7 +35,7 @@ func getParam1() string {
 			Payload:payloadstr,
 		},
 		Gpsobject: queue.Car,
-		Uuid:      uuid.New(),
+		UI:      uuid.New(),
 		Timestamp: 1,
 	}
 

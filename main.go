@@ -11,7 +11,7 @@ import (
 )
 
 
-
+//f08db884-f205-4153-9211-8b29245bbd89
 func handleNewEntries(w http.ResponseWriter, req *http.Request) {
 
 	log.Info("trying to connect")
@@ -62,7 +62,7 @@ func handleGPSFence(w http.ResponseWriter, req *http.Request) {
 				Payload:"{}",
 			},
 			Gpsobject: 0,
-			UUID:      uuid.UUID{},
+			UI:      uuid.UUID{},
 			Timestamp: time.Now().UnixNano(),
 		}
 
@@ -90,7 +90,7 @@ func handleGPSFence(w http.ResponseWriter, req *http.Request) {
 // to be able to check if it is alive from
 func pingHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(" HTTP status code returned running: release-0.0.4-demo "))
+	w.Write([]byte(" HTTP status code returned running: release-0.0.6-demo "))
 }
 
 

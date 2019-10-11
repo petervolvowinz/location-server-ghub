@@ -62,7 +62,7 @@ func TestGetJSONFromGPSLocationObject(t *testing.T) {
 			Accuracy:1,
 	    },
 		Gpsobject:Bike,
-		Uuid:uuid.New(),
+		UI:uuid.New(),
 		Timestamp:1,
 	}
 
@@ -75,7 +75,7 @@ func TestGetJSONFromGPSLocationObject(t *testing.T) {
     if err != nil{
     	t.Error( "json could not unmarshal", err )
 	}
-	if (gps.Uuid != gpsobject.Uuid){
+	if (gps.UI != gpsobject.UI){
 		t.Error(" json convertion failed ",  ajson)
 	}
 
@@ -91,16 +91,16 @@ func TestUUID(t *testing.T) {
 			Accuracy:1,
 		},
 		Gpsobject:Bike,
-		Uuid:uuid,
+		UI :uuid,
 		Timestamp:1,
 	}
 
-	if (gps.Uuid != uuid){
+	if (gps.UI != uuid){
 		t.Error(" error generating uuid ")
 	}
 
 	uuid2 := GetUUID()
-    if (uuid2 == gps.Uuid){
+    if (uuid2 == gps.UI){
     	t.Error("uuid not unique")
 	}
 }
@@ -227,5 +227,19 @@ func TestWebJSON(t *testing.T){
 
 }
 
+func getwarningsJSON() string {
+	return `{"warnings":[{"Location":{"lat":37.390750000000104,"lng":-122.03407102774996,"accuracy":1,"payload":"{\"ambientemp\":23.3,\"cabintemp\":19.7,\"drivertemp\":22,\"parkingspots\":0}"},"Gpsobject":1,"UUID":"78401d36-716d-4670-9a90-18b0483f94e4","Timestamp":1570752510331861000}]}`
+}
+
+func TestResultList(t *testing.T){
+	jsonStr := getwarningsJSON()
+
+	obj := &Warninglst{}
+	err := json.Unmarshal([]byte(jsonStr),obj)
+
+	if (err != nil){
+		t.Error(" json string not unmarshalled to Warninglst ", err)
+	}
+}
 
 

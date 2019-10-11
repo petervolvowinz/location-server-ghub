@@ -37,14 +37,14 @@ type Searchstruct struct{
 }
 
 type Warninglst struct{
-	Warnings []interface{}	`json:warnings`
+	Warnings []interface{}	`json:"warnings"`
 }
 
 type GPSLocation struct{
-	Location Locationdata `json:location`
-	Gpsobject int	  `json:gpsobject`
-	UUID uuid.UUID       `json:"UUID"`
-	Timestamp int64    `json:timestamp`
+	Location Locationdata `json:"Location""`
+	Gpsobject int	  `json:"Gpsobject"`
+	UI uuid.UUID       `json:"UUID"`
+	Timestamp int64    `json:"Timestamp""`
 }
 
 type Locationdata struct {
@@ -59,18 +59,19 @@ type Climatepayload struct{
 	Ambientemp float64 `json:"ambientemp"`
 	Cabintemp float64 `json:"cabintemp"`
 	Drivertemp float64 `json:"drivertemp"`
+	Parkingspots int64 `json:"parkingspots"`
 }
 
-type SearchJSON struct{
+/*type SearchJSON struct{
 	Latitude  float64 `json:"lat"`
 	Longitude float64 `json:"lng"`
 	Distance  int `json:"dist"`
 	TimeSpan  int `json:"timespan"`
-}
+}*/
 
 
 
-func withinTimeAndDistanceFilter(a,b,c interface{}) bool {
+func withinTimeAndDistanceFilter(a,b,c interface{}) int {
 
 	c1 := a.(GPSLocation)
 	c2 := b.(GPSLocation)
@@ -83,11 +84,14 @@ func withinTimeAndDistanceFilter(a,b,c interface{}) bool {
 	if (withinTime){
 		withinDistance := withinDistance(c1,c2,distance)
 		if (withinDistance){
-			return true
+			return 1
+		} else{
+			return 0
 		}
+	} else{
+		return -1
 	}
 
-	return false
 }
 
 

@@ -48,7 +48,7 @@ func ConvertToMapBoxFreindlyJSON(hits [] interface{}) string{
 				Day:        "Fri",
 				 Time:       "10:00",
 				Icontype:   "car",
-				UUID:       gps.UUID,
+				UUID:       gps.UI,
 			},
 			Geometry: geometry{
 				Type:        "Point",
