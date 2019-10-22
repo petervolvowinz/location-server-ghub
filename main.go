@@ -18,6 +18,13 @@ func handleNewEntries(w http.ResponseWriter, req *http.Request) {
 
 	json := req.FormValue("gps")
 
+	t_param,d_param,err := queue.ConvertTimeDistanceParams(req.FormValue("timespan"),req.FormValue("distance"))
+
+	if err != nil {
+		log.Info("Invalid time and/or diistance params  sent from client, using defaults as fallback")
+		t_param,d_param = queue.GetDefaultParams()
+	}
+
 	valid,riderObject := queue.IsValidGPSLocationJSON(json)
 	log.Info(json)
 	if (valid){
@@ -25,14 +32,15 @@ func handleNewEntries(w http.ResponseWriter, req *http.Request) {
 		riderObject.Timestamp = time.Now().UnixNano() // timestamp as soon as we can.
 		queue.AddNewPosition(*riderObject)
 
-		warninglist := queue.RetrieveCollisionList(*riderObject)
+		// warninglist := queue.RetrieveCollisionList(*riderObject)
+		warninglist := queue.RetrieveCollisionList_2(*riderObject,t_param,d_param)
 		ajsonlist := queue.GetWarninglistJSON(warninglist)
 
         w.WriteHeader(http.StatusOK)
 		io.WriteString(w,ajsonlist)
 
 	}else {
-		log.Info("Invalid json sent from mob client")
+		log.Info("Invalid json sent from client")
 		w.WriteHeader(http.StatusBadRequest)
 		io.WriteString(w,"server could not parse json parameter")
 	}

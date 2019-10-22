@@ -3,14 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="543a507f-7055-4b1c-8a3a-6a433cf4bfb8" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/locationserver_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/locationserver_test.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/client/client.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/client/client.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/loadbalancetest/loadbalancetest.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/loadbalancetest/loadbalancetest.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/queue/distanceutil.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/queue/distanceutil.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vendor/queue/distanceutil_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/queue/distanceutil_test.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vendor/queue/locationdata.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/queue/locationdata.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vendor/queue/locationqueue.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/queue/locationqueue.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/queue/mapboxconvutil.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/queue/mapboxconvutil.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/queue/searchfilter.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/queue/searchfilter.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -39,6 +37,7 @@
     <property name="configurable.Project.GOPATH.is.expanded" value="true" />
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
+    <property name="go.vendoring.notification.had.been.shown" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -62,7 +61,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Docker.Dockerfile">
+  <component name="RunManager" selected="Go Test.distanceutil_test.go">
     <configuration name="go build client.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true">
       <module name="location-server-ghub" />
       <working_directory value="$PROJECT_DIR$/" />
@@ -137,14 +136,14 @@
       <item itemvalue="Go Build.go build location-server-ghub" />
       <item itemvalue="Go Build.go build client.go" />
       <item itemvalue="Go Build.go build main.go" />
-      <item itemvalue="Go Test.distanceutil_test.go" />
       <item itemvalue="Go Build.go build location-server-ghub (1)" />
+      <item itemvalue="Go Test.distanceutil_test.go" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Test.distanceutil_test.go" />
         <item itemvalue="Docker.Dockerfile" />
         <item itemvalue="Go Build.go build main.go" />
-        <item itemvalue="Go Test.distanceutil_test.go" />
         <item itemvalue="Go Build.go build location-server-ghub (1)" />
         <item itemvalue="Go Build.go build client.go" />
       </list>

@@ -5,6 +5,7 @@ import (
 	"github.com/google/uuid"
 	"math"
 	"testing"
+	"time"
 )
 
 func TestGetApproxDistance1(t *testing.T) {
@@ -243,3 +244,48 @@ func TestResultList(t *testing.T){
 }
 
 
+func TestTimeSpanFunc(t *testing.T){
+
+	ts1 := time.Now().UnixNano()
+	time.Sleep(1*time.Second)
+	ts2 := time.Now().UnixNano()
+
+	if withinTimeSpan(ts1,ts2,Timedepth) == false{
+		t.Error(" 1 second should be within timespan")
+	}
+	time.Sleep(5*time.Second)
+	ts2 = time.Now().UnixNano()
+	if withinTimeSpan(ts1,ts2,Timedepth){
+		t.Error(" 6 seconds should be outside timespan")
+	}
+
+}
+
+
+func TestWithinDistanceFunc(t *testing.T){
+	lat1 := 37.387401
+	long1 := -122.035179
+
+	loc1 := GPSLocation{Location:Locationdata{Latitude:lat1,Longitude:long1,Accuracy:0,Payload:"{}"}}
+
+	lat2 := 37.389649
+	long2 := -122.034433
+
+	loc2 := GPSLocation{Location:Locationdata{Latitude:lat2,Longitude:long2,Accuracy:0,Payload:"{}"}}
+
+	if withinDistance(loc1,loc2,300) == false{
+		t.Error("expected within distance")
+	}
+
+	if withinDistance(loc2,loc1,300) == false{
+		t.Error("expected within distance")
+	}
+
+	if withinDistance(loc1,loc2,250){
+		t.Error("expected without distance")
+	}
+
+	if withinDistance(loc2,loc1,250){
+		t.Error("expected without distance")
+	}
+}

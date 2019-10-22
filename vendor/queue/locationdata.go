@@ -5,6 +5,7 @@ import (
 	dll "github.com/emirpasic/gods/lists/doublylinkedlist"
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -117,7 +118,7 @@ func AddNewPosition_2(location GPSLocation){
 }
 
 func withinTimeSpan(driver_ts int64,detect_ts int64,timespan int64) bool{
-	return ((driver_ts - detect_ts)/1e+9 < timespan)
+	return ((Abs(driver_ts - detect_ts))/1e+9) < timespan
 }
 
 
@@ -133,10 +134,14 @@ func withinDistance(driver GPSLocation,detect GPSLocation,distance int64) bool{
 	return (dist < float64(distance))
 }
 
-
+//obsolete as should be deleted
 func RetrieveCollisionList(objecttype GPSLocation)[] interface{}{
 
 	return RetrieveCollisionList_2(objecttype,Timedepth,Criticaldistance)
+}
+
+func GetDefaultParams() (int64,int64) {
+	return Timedepth, Criticaldistance
 }
 
 func RetrieveCollisionList_2(objecttype GPSLocation,timed int64,dist int64)[] interface{}{
@@ -288,6 +293,20 @@ func GetUUID()(uuid.UUID){
 	 return uuid.New()
 }
 
+// check params and convert from string
+func ConvertTimeDistanceParams(time string,distance string) (int64,int64,error){
+	times,err:= strconv.ParseInt(time,10, 64)
+	if err != nil{
+		log.Info("time param not parsed")
+		return -1,-1,err
+	}
+	dist,err := strconv.ParseInt(distance,10,64)
+	if err != nil {
+		log.Info("time param not parsed")
+		return -1,-1,err
+	}
+	return times,dist,nil
+}
 
 
 
