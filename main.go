@@ -20,6 +20,8 @@ func handleNewEntries(w http.ResponseWriter, req *http.Request) {
 
 	t_param,d_param,err := queue.ConvertTimeDistanceParams(req.FormValue("timespan"),req.FormValue("distance"))
 
+	//log.Info("timespan is ", t_param , " distance span is ", d_param)
+
 	if err != nil {
 		log.Info("Invalid time and/or diistance params  sent from client, using defaults as fallback")
 		t_param,d_param = queue.GetDefaultParams()
