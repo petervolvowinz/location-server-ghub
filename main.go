@@ -104,6 +104,12 @@ func pingHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 
+func ServeMap() error {
+	http.Handle("/",http.FileServer(http.Dir("./static")));
+	return http.ListenAndServe(":8081", nil)
+}
+
+
 // every 100 ms seconds dispose...
 func Dispose(){
 	for {
@@ -138,12 +144,14 @@ func doAtimeTest(){
 func main() {
     log.Info("starting server ...")
 
+
 	go Dispose()
+
 
 	http.HandleFunc("/addposition", handleNewEntries)
     http.HandleFunc("/retrieve",handleGPSFence)
     http.HandleFunc("/version",pingHandler)
-
+    go log.Fatal(ServeMap())
 	log.Fatal(http.ListenAndServe(":8081", nil))
 
     log.Info("closing server down ... ")

@@ -1,6 +1,5 @@
 FROM golang:alpine AS build-env
 
-
 ADD  ./main.go /go/src
 ADD ./vendor/queue /go/src/queue
 
@@ -13,6 +12,7 @@ RUN go get -d -v github.com/emirpasic/gods/lists/doublylinkedlist
 RUN cd /go/src && CGO_ENABLED=0 go build -o locationserver
 
 FROM alpine
+ADD static /app/static
 WORKDIR /app
 
 RUN apk add --no-cache ca-certificates

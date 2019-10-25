@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="543a507f-7055-4b1c-8a3a-6a433cf4bfb8" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -136,9 +138,9 @@
     <recent_temporary>
       <list>
         <item itemvalue="Docker.Dockerfile" />
-        <item itemvalue="Go Test.distanceutil_test.go" />
-        <item itemvalue="Go Build.go build main.go" />
         <item itemvalue="Go Build.go build location-server-ghub (1)" />
+        <item itemvalue="Go Build.go build main.go" />
+        <item itemvalue="Go Test.distanceutil_test.go" />
         <item itemvalue="Go Build.go build client.go" />
       </list>
     </recent_temporary>
