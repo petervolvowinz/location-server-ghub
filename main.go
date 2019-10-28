@@ -100,7 +100,7 @@ func handleGPSFence(w http.ResponseWriter, req *http.Request) {
 // to be able to check if it is alive from
 func pingHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(" HTTP status code returned running: release-0.0.9-demo "))
+	w.Write([]byte(" HTTP status code returned running: release-1.0.0-demo "))
 }
 
 
