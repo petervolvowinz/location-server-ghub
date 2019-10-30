@@ -18,6 +18,15 @@ func handleNewEntries(w http.ResponseWriter, req *http.Request) {
 
 	json := req.FormValue("gps")
 
+	t_param,d_param,err := queue.ConvertTimeDistanceParams(req.FormValue("timespan"),req.FormValue("distance"))
+
+	//log.Info("timespan is ", t_param , " distance span is ", d_param)
+
+	if err != nil {
+		log.Info("Invalid time and/or diistance params  sent from client, using defaults as fallback")
+		t_param,d_param = queue.GetDefaultParams()
+	}
+
 	valid,riderObject := queue.IsValidGPSLocationJSON(json)
 	log.Info(json)
 	if (valid){
@@ -25,14 +34,15 @@ func handleNewEntries(w http.ResponseWriter, req *http.Request) {
 		riderObject.Timestamp = time.Now().UnixNano() // timestamp as soon as we can.
 		queue.AddNewPosition(*riderObject)
 
-		warninglist := queue.RetrieveCollisionList(*riderObject)
+		// warninglist := queue.RetrieveCollisionList(*riderObject)
+		warninglist := queue.RetrieveCollisionList_2(*riderObject,t_param,d_param)
 		ajsonlist := queue.GetWarninglistJSON(warninglist)
 
         w.WriteHeader(http.StatusOK)
 		io.WriteString(w,ajsonlist)
 
 	}else {
-		log.Info("Invalid json sent from mob client")
+		log.Info("Invalid json sent from client")
 		w.WriteHeader(http.StatusBadRequest)
 		io.WriteString(w,"server could not parse json parameter")
 	}
@@ -90,7 +100,13 @@ func handleGPSFence(w http.ResponseWriter, req *http.Request) {
 // to be able to check if it is alive from
 func pingHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(" HTTP status code returned running: release-0.0.6-demo "))
+	w.Write([]byte(" HTTP status code returned running: release-1.0.0-demo "))
+}
+
+
+func ServeMap() error {
+	http.Handle("/",http.FileServer(http.Dir("./static")));
+	return http.ListenAndServe(":8081", nil)
 }
 
 
@@ -128,12 +144,14 @@ func doAtimeTest(){
 func main() {
     log.Info("starting server ...")
 
+
 	go Dispose()
+
 
 	http.HandleFunc("/addposition", handleNewEntries)
     http.HandleFunc("/retrieve",handleGPSFence)
     http.HandleFunc("/version",pingHandler)
-
+    go log.Fatal(ServeMap())
 	log.Fatal(http.ListenAndServe(":8081", nil))
 
     log.Info("closing server down ... ")

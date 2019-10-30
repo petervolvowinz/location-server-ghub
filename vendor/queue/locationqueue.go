@@ -27,15 +27,16 @@ func Add(object interface{}){
 	}
 }
 
+//finds all according to the filter and the comparator function
 func FindAll(comparee interface{},filterdata interface{},comparator Filter)[] interface{}{
 	var resultarray [] interface{}
 
 	iterator := queueinstance.Iterator()
-	for iterator.Next() { //TODO we actually could stop when we have passed the timespan...
+	for iterator.Next() {
 		compresult := comparator(iterator.Value(),comparee,filterdata)
 		if (compresult == 1){
 			resultarray = append(resultarray, iterator.Value())
-		}else if (compresult == -1){ // do not search passed timespan
+		}else if (compresult == -1){
 			break;
 		}
 	}

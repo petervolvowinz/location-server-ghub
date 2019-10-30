@@ -10,7 +10,7 @@ func getTestJSONpayload() string {
 
 func TestJSONPayload(t *testing.T) {
 
-	locationdata := parseJSONpayload(getTestJSONpayload())
+	// locationdata := parseJSONpayload(getTestJSONpayload())
 
 	// perform tests on locationdata
 }

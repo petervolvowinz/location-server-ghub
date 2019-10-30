@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
+	"time"
 )
 
 type featureCollection struct{
@@ -18,9 +19,9 @@ type feature struct{
 }
 
 type properties struct{
-	Ambtemp int `json:"ambienttemp"`
-	Cabintemp int `json:"cabintemp"`
-	Drivertemp int `json:"drivertemp"`
+	Ambtemp float64 `json:"ambienttemp"`
+	Cabintemp float64 `json:"cabintemp"`
+	Drivertemp float64 `json:"drivertemp"`
 	Day string `json:"Day"`
 	Time string `json:"Time"`
 	Icontype string `json:"Icontype"`
@@ -32,6 +33,71 @@ type geometry struct{
 	Coordinates [] float64 `json:"coordinates"`
 }
 
+func getDayStr(ti time.Time)(string){
+
+	switch ti.Weekday() {
+	case time.Friday:
+		return "Fri"
+	case time.Saturday:
+		return "Sat"
+	case time.Sunday:
+		return "Sun"
+	case time.Monday:
+		return "Mon"
+	case time.Tuesday:
+		return "Tue"
+	case time.Wednesday:
+		return "Wed"
+	case time.Thursday:
+		return "Thu"
+	default:
+		return "NIL"
+	}
+}
+
+func getTimeStr(ti time.Time)(string){
+	return ti.UTC().String()
+}
+
+func getIconStr(vehicletype int)(string){
+	switch vehicletype{
+	case Bike:
+		return "bike"
+	case Car:
+		return "car"
+	default:
+		return "raccoon"
+	}
+}
+
+
+
+
+func getDayIconTypeTime(gps GPSLocation)(string,string,string){
+	tm := time.Unix(gps.Timestamp,0)
+
+	dayS := getDayStr(tm)
+	timeS := getTimeStr(tm)
+	iconS := getIconStr(gps.Gpsobject)
+
+	return timeS,dayS,iconS
+}
+
+func getTemp(gps GPSLocation)(float64,float64,float64){
+	switch gps.Gpsobject {
+	case Car:
+		var bytes = []byte(string(gps.Location.Payload))
+		cpl := &Climatepayload{}
+		err := json.Unmarshal(bytes,&cpl)
+		if err != nil{
+			log.Info("could not unmarshal payload ", err)
+			return 0,0,0
+		}
+		return cpl.Ambientemp,cpl.Cabintemp,cpl.Drivertemp
+	default:
+		return 0, 0, 0
+	}
+}
 
 func ConvertToMapBoxFreindlyJSON(hits [] interface{}) string{
 
@@ -39,15 +105,17 @@ func ConvertToMapBoxFreindlyJSON(hits [] interface{}) string{
 	
 	for _,element := range hits {
 		gps := element.(GPSLocation)
+		dayS,TimeS,IcontypeS := getDayIconTypeTime(gps)
+		at,ct,dt := getTemp(gps)
 		afeature := &feature{
 			Type: "Feature",
 			 Properties: properties{
-				Ambtemp:    70,
-				Cabintemp:  75,
-				Drivertemp: 75,
-				Day:        "Fri",
-				 Time:       "10:00",
-				Icontype:   "car",
+				Ambtemp:    at,
+				Cabintemp:  ct,
+				Drivertemp: dt,
+				Day:        dayS,
+				Time:       TimeS,
+				Icontype:   IcontypeS,
 				UUID:       gps.UI,
 			},
 			Geometry: geometry{

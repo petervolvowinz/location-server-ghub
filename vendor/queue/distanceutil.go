@@ -6,6 +6,12 @@ const(
 	R =  6371000 // earth is not round, its elliptical !!! this value is a mean value
 )
 
+//go:inline
+func Abs(n int64) int64 {
+	y := n >> 63
+	return (n ^ y) - y
+}
+
 func GetRadians(degree float64) float64{
 	return degree*math.Pi/180
 }
