@@ -3,7 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="543a507f-7055-4b1c-8a3a-6a433cf4bfb8" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/static/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/queue/mapboxconvutil.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/queue/mapboxconvutil.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -166,7 +167,7 @@
               <path>
                 <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
                 <item name="com.intellij.execution.services.ServiceModel$ServiceNode@43645430" type="9fbbdea:ServiceModel$ServiceNode" />
-                <item name="com.intellij.execution.services.ServiceModel$ServiceNode@73d6af8" type="9fbbdea:ServiceModel$ServiceNode" />
+                <item name="com.intellij.execution.services.ServiceModel$ServiceNode@30a1dfe" type="9fbbdea:ServiceModel$ServiceNode" />
               </path>
             </expand>
             <select />
