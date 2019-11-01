@@ -282,10 +282,10 @@ func TestWithinDistanceFunc(t *testing.T){
 	}
 
 	if withinDistance(loc1,loc2,250){
-		t.Error("expected without distance")
+		t.Error("expected outside distance")
 	}
 
 	if withinDistance(loc2,loc1,250){
-		t.Error("expected without distance")
+		t.Error("expected outside distance")
 	}
 }

@@ -197,7 +197,7 @@
     shareLocations = data;
   });*/
 
-	$.getJSON('http://localhost:6060/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":2000}', function(data) {
+	$.getJSON('http://localhost:8081/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":2000}', function(data) {
 		console.log(data);
 		shareLocations = data;
 	});

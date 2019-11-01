@@ -11,6 +11,24 @@ import (
 )
 
 
+func addPosition(json string){
+	log.Info("trying to connect")
+
+	valid,riderObject := queue.IsValidGPSLocationJSON(json)
+	log.Info(json)
+	if (valid) {
+		riderObject.Timestamp = time.Now().UnixNano() // timestamp as soon as we can.
+		queue.AddNewPosition(*riderObject)
+	}
+}
+
+func addNoJsonResponse(w http.ResponseWriter, req *http.Request){
+	json := req.FormValue("gps")
+	go addPosition(json)
+	w.WriteHeader(http.StatusOK)
+	io.WriteString(w, json)
+}
+
 //f08db884-f205-4153-9211-8b29245bbd89
 func handleNewEntries(w http.ResponseWriter, req *http.Request) {
 
@@ -23,7 +41,7 @@ func handleNewEntries(w http.ResponseWriter, req *http.Request) {
 	//log.Info("timespan is ", t_param , " distance span is ", d_param)
 
 	if err != nil {
-		log.Info("Invalid time and/or diistance params  sent from client, using defaults as fallback")
+		log.Info("Invalid time and/or distance params  sent from client, using defaults as fallback")
 		t_param,d_param = queue.GetDefaultParams()
 	}
 
@@ -35,6 +53,7 @@ func handleNewEntries(w http.ResponseWriter, req *http.Request) {
 		queue.AddNewPosition(*riderObject)
 
 		// warninglist := queue.RetrieveCollisionList(*riderObject)
+
 		warninglist := queue.RetrieveCollisionList_2(*riderObject,t_param,d_param)
 		ajsonlist := queue.GetWarninglistJSON(warninglist)
 
@@ -79,7 +98,7 @@ func handleGPSFence(w http.ResponseWriter, req *http.Request) {
 		//timespan := searchObject.Timespan
 		//distance := searchObject.Distance
 
-		list := queue.RetrieveCollisionList_2(*GPSSearchObject,searchObject.Timespan,searchObject.Distance)
+		list := queue.RetrieveCollisionList_2(*GPSSearchObject,searchObject.Timespan,searchObject.Distance,30)
 		json := queue.ConvertToMapBoxFreindlyJSON(list)
 
 		if (json == ""){
@@ -148,6 +167,7 @@ func main() {
 	go Dispose()
 
 
+    http.HandleFunc("/addposnoret",addNoJsonResponse)
 	http.HandleFunc("/addposition", handleNewEntries)
     http.HandleFunc("/retrieve",handleGPSFence)
     http.HandleFunc("/version",pingHandler)

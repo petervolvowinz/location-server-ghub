@@ -144,7 +144,7 @@ func GetDefaultParams() (int64,int64) {
 	return Timedepth, Criticaldistance
 }
 
-func RetrieveCollisionList_2(objecttype GPSLocation,timed int64,dist int64)[] interface{}{
+func RetrieveCollisionList_2(objecttype GPSLocation,timed int64,dist int64,depth...int)[] interface{}{
 
 	queueMutex.Lock()
 
@@ -152,7 +152,16 @@ func RetrieveCollisionList_2(objecttype GPSLocation,timed int64,dist int64)[] in
 		distance: dist,
 		time:     timed,
 	}
-	listofdectees := FindAll(objecttype,timedistfilter,withinTimeAndDistanceFilter)
+
+	var listofdectees [] interface{}
+
+	if (len(depth) > 0){
+		listofdectees = FindAll(objecttype,timedistfilter,withinTimeAndDistanceFilter,depth[0])
+	}else{
+		listofdectees = FindAll(objecttype,timedistfilter,withinTimeAndDistanceFilter)
+	}
+
+
 
 	queueMutex.Unlock()
 

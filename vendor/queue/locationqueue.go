@@ -28,15 +28,25 @@ func Add(object interface{}){
 }
 
 //finds all according to the filter and the comparator function
-func FindAll(comparee interface{},filterdata interface{},comparator Filter)[] interface{}{
+func FindAll(comparee interface{},filterdata interface{},comparator Filter,depth ...int)[] interface{}{
 	var resultarray [] interface{}
 
+	var breaklimit int = 10 // only return maximum 10 data points for now
+	if len(depth) > 0 {
+		breaklimit = depth[0]
+	}
+
 	iterator := queueinstance.Iterator()
+	iterationcounter := 0
 	for iterator.Next() {
+		iterationcounter++
 		compresult := comparator(iterator.Value(),comparee,filterdata)
 		if (compresult == 1){
 			resultarray = append(resultarray, iterator.Value())
 		}else if (compresult == -1){
+			break;
+		}
+		if (iterationcounter >=breaklimit) {
 			break;
 		}
 	}
