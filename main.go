@@ -26,7 +26,7 @@ func addNoJsonResponse(w http.ResponseWriter, req *http.Request){
 	json := req.FormValue("gps")
 	go addPosition(json)
 	w.WriteHeader(http.StatusOK)
-	io.WriteString(w, json)
+	// w.Write([]byte("position inserted"))
 }
 
 //f08db884-f205-4153-9211-8b29245bbd89
@@ -119,7 +119,7 @@ func handleGPSFence(w http.ResponseWriter, req *http.Request) {
 // to be able to check if it is alive from
 func pingHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(" HTTP status code returned running: release-1.0.0-demo "))
+	w.Write([]byte(" HTTP status code returned running: release-1.0.1-demo "))
 }
 
 
