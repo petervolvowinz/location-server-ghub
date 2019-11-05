@@ -22,6 +22,7 @@ func addPosition(json string){
 	}
 }
 
+// just add , no response data
 func addNoJsonResponse(w http.ResponseWriter, req *http.Request){
 	json := req.FormValue("gps")
 	go addPosition(json)
