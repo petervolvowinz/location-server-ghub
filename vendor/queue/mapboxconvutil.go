@@ -62,7 +62,7 @@ func getTimeStr(ti time.Time)(string){
 func getIconStr(vehicletype int)(string){
 	switch vehicletype{
 	case Bike:
-		return "bike"
+		return "bicycle"
 	case Car:
 		return "car"
 	default:

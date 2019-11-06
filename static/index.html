@@ -115,7 +115,7 @@
 		fakeCoord = data
 	});
 
-  // $.getJSON('http://localhost:8081/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
+   //$.getJSON('http://localhost:8081/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
   $.getJSON('https://locationserver.uswest2.development.volvo.care/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
     console.log(data);
     shareLocations = data;
@@ -276,8 +276,8 @@
             async: false
           });
         
-          // $.getJSON('http://localhost:8081/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
-          $.getJSON('https://locationserver.uswest2.development.volvo.care/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
+          $.getJSON('http://localhost:8081/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
+          //$.getJSON('https://locationserver.uswest2.development.volvo.care/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
             shareLocations = data;
             console.log(data);
 
@@ -305,7 +305,8 @@
                 // }
                 if(occurencesUUID(element.properties['UUID']) == 1){
                   newShareLocations.push(shareLocations[rowIndex]);
-                  if(element.properties['Icontype'] == "car"){
+                  var IcontypeObject = element.properties['Icontype']
+                  if(IcontypeObject == "car"){
                     realCarCount++;
                   }
                   else if(IcontypeObject == "bicycle")
