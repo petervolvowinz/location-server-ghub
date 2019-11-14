@@ -53,6 +53,10 @@
     <div class='map-overlay-inner'>
         <h2>Share Location Platform</h2>
         <fieldset>
+            <!-- <div id="searchVINInfo">
+                <label >What VIN number do you want to search?</label>
+                <input type="text" name="vin" placeholder="ex. AAAAAAAAAAAAAAAAA" >
+            </div> -->
             <div id="distanceInfo">
                 <label >What range distance (in m)?</label>
                 <input type="number" name="distance" id="distance" min="0" value="200" >
@@ -102,9 +106,9 @@
   var layerTypeObject = document.getElementById('layerTypeObject');
   var distanceItem = document.getElementById('distance');
 
-  distanceItem.addEventListener('change', function(e) {
-    distance = document.getElementById('distance').value;
-  });
+  // distanceItem.addEventListener('change', function(e) {
+  //   distance = document.getElementById('distance').value;
+  // });
 
   $.ajaxSetup({
     async: false
@@ -153,6 +157,9 @@
   function display_map() {
     mapboxgl.accessToken = 'pk.eyJ1IjoibWFyaWEtaTI4MyIsImEiOiJjamVqMDVxdm4zYzl5MnBsbnZhZjV1MDkyIn0.bl4Y0AewatInkbnEfTs6Pg' 
 
+    const metersToPixelsAtMaxZoom = (meters, latitude) =>
+      meters / 0.075 / Math.cos(latitude * Math.PI / 180)
+
     var map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/dark-v9',//'mapbox://styles/mapbox/satellite-streets-v10',
@@ -160,6 +167,23 @@
       zoom: 5.6,
     });
       
+
+    distanceItem.addEventListener('change', function(e) {
+      distance = document.getElementById('distance').value;
+      var radiusCircle = {
+        stops: [
+                  [0, 0],
+                  [20, metersToPixelsAtMaxZoom(distance, lat)]
+                ],
+                base: 2
+              
+      }
+
+      map.setPaintProperty("circleRange", 'circle-radius', radiusCircle);
+  });
+
+
+
     var geolocate = new mapboxgl.GeolocateControl(({
       positionOptions: {
           enableHighAccuracy: true
@@ -220,6 +244,39 @@
         console.log("position = " + position);
  
         if(alreadyExsist == 0) { //seems that it execute this geolocate twice and I need to do it just once
+
+          map.addSource("source_range_circle", {
+            "type": "geojson",
+            "data": {
+              "type": "FeatureCollection",
+              "features": [{
+                "type": "Feature",
+                "geometry": {
+                  "type": "Point",
+                  "coordinates": [lon,lat], 
+                }
+              }]
+            }
+          });
+
+          map.addLayer({
+            "id": "circleRange",
+            "type": "circle",
+            "source": "source_range_circle",
+            "paint": {
+              "circle-radius": {
+                stops: [
+                  [0, 0],
+                  [20, metersToPixelsAtMaxZoom(distance, lat)]
+                ],
+                base: 2
+              },
+              "circle-color": "white",
+              "circle-opacity": 0.3
+            }
+          });
+
+
 
           map.addLayer({
             id: 'shareLocationsDot',
