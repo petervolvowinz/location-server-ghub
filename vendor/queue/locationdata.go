@@ -42,10 +42,10 @@ type Warninglst struct{
 }
 
 type GPSLocation struct{
-	Location Locationdata `json:"Location""`
+	Location Locationdata `json:"Location"`
 	Gpsobject int	  `json:"Gpsobject"`
 	UI uuid.UUID       `json:"UUID"`
-	Timestamp int64    `json:"Timestamp""`
+	Timestamp int64    `json:"timestamp"`
 }
 
 type Locationdata struct {

@@ -18,6 +18,7 @@ func addPosition(json string){
 	log.Info(json)
 	if (valid) {
 		riderObject.Timestamp = time.Now().UnixNano() // timestamp as soon as we can.
+		log.Info("adding json to server")
 		queue.AddNewPosition(*riderObject)
 	}
 }

@@ -90,7 +90,7 @@
 
 
 	<script>
-    var shareLocations = "";
+     var shareLocations = ""
     var distance = 200;
     var carCount = 0;
     var bicycleCount = 0;
@@ -127,10 +127,10 @@
 		fakeCoord = data
 	});
 
-  //$.getJSON('http://localhost:8081/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
-  $.getJSON('https://locationserver.uswest2.development.volvo.care/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
-    console.log(data);
-    shareLocations = data;
+  $.getJSON('http://localhost:8081/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
+  //$.getJSON('https://locationserver.uswest2.development.volvo.care/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
+        console.log(data);
+        shareLocations = data;
   });
 
 
@@ -284,35 +284,34 @@
             }
           });
 
-
-
-          map.addLayer({
-            id: 'shareLocationsDot',
-            type: 'circle', //'symbol'
-            source: {
-              type: 'geojson',
-              data: {
-                type: "FeatureCollection",
-                features: shareLocations
-              }
-            },
-            filter: ['all', filterType],
-            paint: {
-              'circle-color': [                       
-                'match',
-                  ['get', 'Icontype'],
-                  'car',  [ 'case',
-                    ["<=", ['number', ['get', 'cabintemp']], 50], '#F87431',
-                    ["<=", ['number', ['get', 'cabintemp']], 70], '#E55451',
-                    ["<=", ['number', ['get', 'cabintemp']], 80], '#F778A1',
-                    '#F87431'
-                  ],
-                  /* other */ '#1589FF' //bicycle
-              ],
-              "circle-radius": 3
-            }
-          });
-          alreadyExsist = 1;
+            map.addLayer({
+                id: 'shareLocationsDot',
+                type: 'circle', //'symbol'
+                source: {
+                    type: 'geojson',
+                    data: {
+                        type: "FeatureCollection",
+                        features: shareLocations
+                    }
+                },
+                filter: ['all', filterType],
+                paint: {
+                    'circle-color': [
+                        'match',
+                        ['get', 'Icontype'],
+                        'car', ['case',
+                            ["<=", ['number', ['get', 'cabintemp']], 50], '#F87431',
+                            ["<=", ['number', ['get', 'cabintemp']], 70], '#E55451',
+                            ["<=", ['number', ['get', 'cabintemp']], 80], '#F778A1',
+                            '#F87431'
+                        ],
+                        /* other */ '#1589FF' //bicycle
+                    ],
+                    "circle-radius": 3
+                }
+            });
+        // }
+        alreadyExsist = 1;
         }
       });
       
@@ -341,8 +340,8 @@
             async: false
           });
 
-          //$.getJSON('http://localhost:8081/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
-          $.getJSON('https://locationserver.uswest2.development.volvo.care/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
+          $.getJSON('http://localhost:8081/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
+          //$.getJSON('https://locationserver.uswest2.development.volvo.care/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
             shareLocations = data;
             console.log(data);
 
