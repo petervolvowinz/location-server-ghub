@@ -9,14 +9,6 @@
     body { margin:0; padding:0; }
     #map { position:absolute; top:0; bottom:0; width:100%; }
 
-    .marker {
-        background-image: url('redcar.png');
-        background-size: cover;
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        cursor: pointer;
-    }
 
     .map-overlay {
         font: 14px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
@@ -127,10 +119,13 @@
 		fakeCoord = data
 	});
 
-  //$.getJSON('http://localhost:8081/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
+  // $.getJSON('http://localhost:8081/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
   $.getJSON('https://locationserver.uswest2.development.volvo.care/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
     console.log(data);
-    shareLocations = data;
+    if(data == null) 
+      shareLocations = [];
+    else
+      shareLocations = data;
   });
 
 
@@ -249,10 +244,11 @@
         lon = e.coords.longitude;
         lat = e.coords.latitude
         position = [lon, lat];
-        console.log("position = " + position);
+        console.log("My position = " + position);
  
         if(alreadyExsist == 0) { //seems that it execute this geolocate twice and I need to do it just once
 
+          //draw the gray range circle 
           map.addSource("source_range_circle", {
             "type": "geojson",
             "data": {
@@ -283,12 +279,13 @@
               "circle-opacity": 0.3
             }
           });
+          //END to draw the gray range circle 
 
 
 
           map.addLayer({
             id: 'shareLocationsDot',
-            type: 'circle', //'symbol'
+            type: 'circle', 
             source: {
               type: 'geojson',
               data: {
@@ -340,8 +337,8 @@
           $.ajaxSetup({
             async: false
           });
-
-          //$.getJSON('http://localhost:8081/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
+        
+          // $.getJSON('http://localhost:8081/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
           $.getJSON('https://locationserver.uswest2.development.volvo.care/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
             shareLocations = data;
             console.log(data);
@@ -351,10 +348,8 @@
             realCarCount = 0;
             realBicycleCount = 0;
             var newShareLocations = [];
-            console.log("Prima di ridurre array:");
-            console.log(shareLocations);
             if(shareLocations == null){
-              console.log("il valore e' nullo");
+              console.log("shareLocations data is null");
               map.setLayoutProperty('shareLocationsDot', 'visibility', 'none'); 
             }
             else{
@@ -382,7 +377,7 @@
 
               });
 
-              console.log("Nuovo shareLocagtions array dopo il remove dei punti");
+              console.log("New shareLocations array after removing the double uuid:");
               console.log(newShareLocations);
               dataLayer={
                       type: "FeatureCollection",
