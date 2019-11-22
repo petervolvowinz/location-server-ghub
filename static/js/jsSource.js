@@ -1,3 +1,6 @@
+var carCount = 0;
+var bicycleCount = 0;
+var wholeShareLocations = "";
 var position = [];
 var carCount = 0;
 var bicycleCount = 0;
