@@ -20,6 +20,8 @@ func addPosition(json string){
 		riderObject.Timestamp = time.Now().UnixNano() // timestamp as soon as we can.
 		log.Info("adding json to server")
 		queue.AddNewPosition(*riderObject)
+	} else {
+		log.Info("json invalid, nothing added to queue")
 	}
 }
 
@@ -28,7 +30,6 @@ func addNoJsonResponse(w http.ResponseWriter, req *http.Request){
 	json := req.FormValue("gps")
 	go addPosition(json)
 	w.WriteHeader(http.StatusOK)
-	// w.Write([]byte("position inserted"))
 }
 
 //f08db884-f205-4153-9211-8b29245bbd89
@@ -121,7 +122,7 @@ func handleGPSFence(w http.ResponseWriter, req *http.Request) {
 // to be able to check if it is alive from
 func pingHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(" HTTP status(200) OK code returned running: release-1.0.3-demo "))
+	w.Write([]byte(" HTTP status(200) OK code returned running: release-1.0.4-demo "))
 }
 
 
