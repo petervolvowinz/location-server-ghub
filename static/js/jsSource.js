@@ -13,27 +13,28 @@ var filterType = ['match', ['get', 'Icontype'], ["car","bicycle"], true, false];
 var layerTypeObject = document.getElementById('layerTypeObject');
 var distanceItem = document.getElementById('distance');
 
-function occurencesUUID(valueToSearch) {
-  var a = [], b = [], prev, countvalue;
 
-  UUIDorigin.sort();
-  for ( var i = 0; i < UUIDorigin.length; i++ ) {
-    if ( UUIDorigin[i] !== prev ) {
-      a.push(UUIDorigin[i]);
-      b.push(1);
-    } else {
-      b[b.length-1]++;
-    }
-    prev = UUIDorigin[i];
-  }
-    
-  for ( var i = 0; i < a.length; i++ ) {
-    if ( a[i] == valueToSearch ) {
-      countvalue = b[i];
+
+// Utility function checks if we have a uuid in sharedLocations array
+function uuidMemberTest(sharedLocations,uuid){
+  let found = false
+  for (let el of sharedLocations){
+    if (el.properties['UUID'] === uuid){
+      found = true
+      break
     }
   }
-    
-  return countvalue;
+  return found
+}
+
+//  Increase counter of icontype
+function countCarsAndBikes(icontype) {
+  let IcontypeObject = icontype
+  if (IcontypeObject === "car") {
+    realCarCount++;
+  } else if (IcontypeObject === "bicycle") {
+    realBicycleCount++;
+  }
 }
 
 
@@ -223,7 +224,7 @@ map.on('load', function() {
         console.log(data);
 
         //Remove UUID duplicates 
-        UUIDorigin = [];
+        // UUIDorigin = [];
         realCarCount = 0;
         realBicycleCount = 0;
         var newShareLocations = [];
@@ -232,23 +233,19 @@ map.on('load', function() {
           map.setLayoutProperty('shareLocationsDot', 'visibility', 'none'); 
         }
         else{
-          map.setLayoutProperty('shareLocationsDot', 'visibility', 'visible'); 
-        
+          map.setLayoutProperty('shareLocationsDot', 'visibility', 'visible');
+
           shareLocations.forEach(function(element,rowIndex) {
-            console.log("RowIndex = " + rowIndex);
-            UUIDorigin.push(element.properties['UUID'])
-            console.log("UUIDorigin.length " + UUIDorigin.length); 
-            console.log("UUID = " + element.properties['UUID'] + " - Occurences = " + occurencesUUID(element.properties['UUID']));
-            if(occurencesUUID(element.properties['UUID']) == 1){
-              newShareLocations.push(shareLocations[rowIndex]);
-              var IcontypeObject = element.properties['Icontype'];
-              if(IcontypeObject == "car"){
-                realCarCount++;
-              }
-              else if(IcontypeObject == "bicycle")
-                realBicycleCount++;
+            if (!uuidMemberTest(newShareLocations,element.properties['UUID'])) {
+              (function(dataelement){
+                newShareLocations.push(dataelement)
+                countCarsAndBikes(element.properties['Icontype'])
+              })(shareLocations[rowIndex]);
             }
+
           });
+
+
 
           console.log("New shareLocations array after removing the double uuid:");
           console.log(newShareLocations);

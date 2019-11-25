@@ -48,13 +48,16 @@
     var fakeCoord = "";
     var distance = 200;
     var lon="-122.03455749999999", lat = "37.3871454";
-  
+
+     $.ajaxSetup({
+         async: false
+     });
     $.getJSON("data/shareCoordinates.geojson", function(data) {
       console.log(data); 
       fakeCoord = data
     });
 
-    // $.getJSON('http://localhost:8081/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
+    //$.getJSON('http://localhost:8081/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
     $.getJSON('https://locationserver.uswest2.development.volvo.care/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
       console.log(data);
       if(data == null) 
