@@ -23,10 +23,35 @@ There are currently 4 apis:
    } 
   
   /addposition
+  Adds the new position, returns gps positions for objects within d meters during a t timespan.
+  parameters:
+  gps ->
   
   /retrieve
   
   /version
   returns the current deployed server version as a string
+  ```
   
+  The json that client needs to parse in Go:
+  ```
+  type Warninglst struct{
+	  Warnings []GPSLocation	`json:"warnings"`
+  }
 
+  type GPSLocation struct{
+	  Location Locationdata `json:"Location"`
+	  Gpsobject int	  `json:"Gpsobject"`
+	  UUID uuid.UUID       `json:"UUID"`
+	  Timestamp int64    `json:"timestamp"`
+  }
+
+  type Locationdata struct {
+	  // Payload   string  `json:"payload"`
+	  Latitude  float64 `json:"lat"`
+	  Longitude float64 `json:"lng"`
+	  Accuracy  float64 `json:"accuracy"`
+	  Payload   string  `json:"payload"`
+  }
+  
+  ```
