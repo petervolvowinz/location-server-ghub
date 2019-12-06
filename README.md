@@ -51,11 +51,18 @@ There are currently 4 apis:
    
    => https:/serverurl/addposnoret?gps=<json>&timespan=5,distance=200
    <=
-   
+    {"warnings":[{"Location":{"lat":37.385997,"lng":-122.03923636959762,"accuracy":1,
+    	"payload":"{\"ambientemp\":5.9,\"cabintemp\":18.5,\"drivertemp\":21.8,\"parkingspots\":94,\"vehicleid\":\"1\"}"},
+    	"Gpsobject":1,
+    	"UUID":"310dcda3-86c7-447b-a104-4061924dbc94",
+    	"timestamp":1575672675636676000
+    	}]
+    } 
+
   
   /retrieve
   Retrieves all registered gps objects within distance d from position p during timespan t.
-  parameters:
+  parameters: <TO BE ADDED>
   
   /version
   returns the current deployed server version as a string
