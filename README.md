@@ -123,3 +123,4 @@ USER go
 EXPOSE 8081
 ENTRYPOINT  ./locationserver
 ```
+Furthermore, the github account is tied to quay.io which builds the Docker image and then spinnaker and kuberenetes handles the deployment to the cloud.
