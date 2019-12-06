@@ -4,6 +4,7 @@ A general "real-time" location server based on GPS position. The principle is to
 
 The idea behind using universal identifiers is that the clients handle and decide how they are identified and for how long. It also anonymizes and removes the need to use vehicle identification numbers, but not only that it also gives other types of "objects" means of identification. There is no persistence, and once time T has passed the data cannot be retrieved again.
 
+## Client apis
 There are currently 4 apis:
 ```
   /addposnoret
@@ -90,6 +91,7 @@ There are currently 4 apis:
   }
   
   ```
+## Deployment
 
 The server is built using a Dockerfile which is subsequently used for deployment:
 
