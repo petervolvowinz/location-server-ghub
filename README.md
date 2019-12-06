@@ -126,5 +126,5 @@ ENTRYPOINT  ./locationserver
 Furthermore, the github account is currently tied to quay.io which builds the Docker image and then spinnaker and kubernetes handles the deployment to the cloud. 
 Tagging scheme
 ```
-	git tag release-x.y.z-demo
+git tag release-x.y.z-demo
 ```
