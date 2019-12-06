@@ -7,9 +7,26 @@ The idea behind using universal identifiers is that the clients handle and decid
 There are currently 4 apis:
 ```
   /addposnoret
+  Adds the new position , does not return a response.
+  parameters:
+  gps ->
+  Ex:
+  gps={"Location":
+   {"lat":37.384997,
+    "lng":-122.03452399999999,
+    "accuracy":1,
+    "payload":{\"ambientemp\":7.4,\"cabintemp\":23.3,\"drivertemp\":25.7,\"parkingspots\":36\"}"},
+     "Gpsobject":1,
+     "UUID":"c592fe16-5b4d-4fd7-ab58-7441b20299cd",
+     "timestamp":1
+     }
+   } 
   
-	/addposition
+  /addposition
+  
   /retrieve
+  
   /version
+  returns the current deployed server version as a string
   
 
