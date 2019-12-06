@@ -11,7 +11,7 @@ There are currently 4 apis:
   parameters:
   gps ->
   Ex:
-  gps={"Location":
+  {"Location":
    {"lat":37.384997,
     "lng":-122.03452399999999,
     "accuracy":1,
@@ -22,10 +22,36 @@ There are currently 4 apis:
      }
    } 
   
+  => https:/serverurl/addposnoret?gps=<json>
+  
   /addposition
   Adds the new position, returns gps positions for objects within d meters during a t timespan.
   parameters:
   gps ->
+  type:string , json format.
+  
+  Ex:
+  {"Location":
+   {"lat":37.384997,
+    "lng":-122.03452399999999,
+    "accuracy":1,
+    "payload":{\"ambientemp\":7.4,\"cabintemp\":23.3,\"drivertemp\":25.7,\"parkingspots\":36\"}"},
+     "Gpsobject":1,
+     "UUID":"c592fe16-5b4d-4fd7-ab58-7441b20299cd",
+     "timestamp":1
+     }
+   }
+   timespan ->
+   type:int, seconds
+   Ex:
+   5
+   distance ->
+   type:int, meters
+   200
+   
+   => https:/serverurl/addposnoret?gps=<json>&timespan=5,distance=200
+   <=
+   
   
   /retrieve
   
