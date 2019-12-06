@@ -124,7 +124,7 @@ EXPOSE 8081
 ENTRYPOINT  ./locationserver
 ```
 Furthermore, the github account is currently tied to quay.io which builds the Docker image and then spinnaker and kubernetes handles the deployment to the cloud. 
-Tagging scheme
+Tagging scheme, which is used as the image build trigger.
 ```
 git tag release-x.y.z-demo
 ```
