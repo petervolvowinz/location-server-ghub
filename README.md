@@ -83,7 +83,7 @@ There are currently 4 apis:
   }
 
   type Locationdata struct {
-	  // Payload   string  `json:"payload"`
+	  string  `json:"payload"` // Payload   
 	  Latitude  float64 `json:"lat"`
 	  Longitude float64 `json:"lng"`
 	  Accuracy  float64 `json:"accuracy"`
