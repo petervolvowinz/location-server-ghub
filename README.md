@@ -54,6 +54,8 @@ There are currently 4 apis:
    
   
   /retrieve
+  Retrieves all registered gps objects within distance d from position p during timespan t.
+  parameters:
   
   /version
   returns the current deployed server version as a string
