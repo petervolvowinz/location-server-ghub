@@ -69,7 +69,7 @@ There are currently 4 apis:
   returns the current deployed server version as a string
   ```
   
-  The json that client needs to parse in Go:
+  The json that client needs to parse here expressed by Go structs:
   ```
   type Warninglst struct{
 	  Warnings []GPSLocation	`json:"warnings"`
