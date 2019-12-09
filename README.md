@@ -101,9 +101,25 @@ There are currently 4 apis:
   	"distance":200
   }
   
-  <= 
+  <= { "Type": "Feature",
+     "properties":{
+				Ambtemp:    at,
+				Cabintemp:  ct,
+				Drivertemp: dt,
+				Day:        dayS,
+				Time:       TimeS,
+				Icontype:   IcontypeS,
+				UUID:       gps.UI,
+     },
+     "geommetry": {
+	"Type":        "Point",
+	"coordinates":[{ -122.232, 37.234}]
+    }
+  }  
   
-  Example in Javascript:
+  This is a mapbox (https://www.mapbox.com) freindly JSON.
+  
+  Javascript Ex:
   $.getJSON('https://locationserver.uswest2.development.volvo.care/retrieve?search={"lat":'+ lat +',"lng":' + lon + ', 	   		"timespan":10,"distance":'+ distance +'}', function(data) {
     ...
   }
