@@ -42,15 +42,18 @@ There are currently 4 apis:
      "timestamp":1
      }
    }
+   
    timespan ->
    type:int, seconds
    Ex:
    5
+   
    distance ->
    type:int, meters
+   Ex:
    200
    
-   => https:/serverurl/addposnoret?gps=<json>&timespan=5,distance=200
+   => https:/serverurl/addposnoret?gps=<json>&timespan=5&distance=200
    <=
     {"warnings":[{"Location":{"lat":37.385997,"lng":-122.03923636959762,"accuracy":1,
     	"payload":"{\"ambientemp\":5.9,\"cabintemp\":18.5,\"drivertemp\":21.8,\"parkingspots\":94,\"vehicleid\":\"1\"}"},
@@ -63,7 +66,42 @@ There are currently 4 apis:
   
   /retrieve
   Retrieves all registered gps objects within distance d from position p during timespan t.
-  parameters: <TO BE ADDED>
+  parameters:
+  lat ->
+  type float
+  Ex:
+  37.3871454
+  
+  lng ->
+  type float
+  Ex:
+  -122.03455749999999
+  
+  timespan ->
+  type int
+  unit seconds
+  Ex:
+  10
+  
+  distance -> 
+  type int
+  unit meters
+  Ex:
+  200
+  
+  => https://locationserver.uswest2.development.volvo.care/retrieve?search={
+  	"lat":37.123,
+ 	"lng":-122.342,
+ 	"timespan":10,
+  	"distance":200
+  }
+  
+  <= 
+  
+  Example in Javascript:
+  $.getJSON('https://locationserver.uswest2.development.volvo.care/retrieve?search={"lat":'+ lat +',"lng":' + lon + ', 	   		"timespan":10,"distance":'+ distance +'}', function(data) {
+    ...
+  }
   
   /version
   returns the current deployed server version as a string
