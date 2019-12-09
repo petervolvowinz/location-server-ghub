@@ -69,7 +69,7 @@ There are currently 4 apis:
   returns the current deployed server version as a string
   ```
   
-  Go structs as example wich is JSON encoded and the passed to the client. Corresponding data structures is needed on the client side to encode the reponse:
+  Go structs as an example. The structs are JSON encoded and then passed to the client in the http reponse. Corresponding data structures is needed on the client side to encode the reponse:
   ```
   type Warninglst struct{
 	  Warnings []GPSLocation	`json:"warnings"`
