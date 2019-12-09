@@ -11,6 +11,9 @@ There are currently 4 apis:
   Adds the new position , does not return a response.
   parameters:
   gps ->
+  type string
+  format JSON
+  
   Ex:
   {"Location":
    {"lat":37.384997,
@@ -29,7 +32,8 @@ There are currently 4 apis:
   Adds the new position, returns gps positions for objects within d meters during a t timespan.
   parameters:
   gps ->
-  type:string , json format.
+  type string
+  format JSON
   
   Ex:
   {"Location":
@@ -67,8 +71,9 @@ There are currently 4 apis:
   /retrieve
   Retrieves all registered gps objects within distance d from position p during timespan t.
   parameters:
-  lat ->
-  type float
+  serch ->
+  type string
+  format JSON
   Ex:
   37.3871454
   
