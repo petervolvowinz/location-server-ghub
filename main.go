@@ -139,8 +139,9 @@ func Dispose() {
 }
 
 func main() {
-	log.Info("starting server ...")
 
+	log.Info("starting server ...")
+	queue.InitRoadUsers()
 	go Dispose()
 
 	http.HandleFunc("/addposnoret", addNoJsonResponse)

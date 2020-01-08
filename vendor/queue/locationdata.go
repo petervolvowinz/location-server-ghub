@@ -69,33 +69,6 @@ type Climatepayload struct {
 	TimeSpan  int `json:"timespan"`
 }*/
 
-func withinTimeAndDistanceFilter(a, b, c interface{}) int {
-
-	c1 := a.(GPSLocation)
-	c2 := b.(GPSLocation)
-	c3 := c.(*TimeDistFilter)
-
-	timespan := c3.time
-	distance := c3.distance
-
-	withinTime := withinTimeSpan(c1.Timestamp, c2.Timestamp, timespan)
-	if withinTime {
-		withinDistance := withinDistance(c1, c2, distance)
-		if withinDistance {
-			return 1
-		} else {
-			return 0
-		}
-	} else {
-		return -1
-	}
-
-}
-
-// singleton
-func GetQueue() *dll.List {
-	return GetQueueInstance()
-}
 
 func AddNewPosition(location GPSLocation) {
 	addNewPosition_2(location)
@@ -111,21 +84,6 @@ func addNewPosition_2(location GPSLocation) {
 	queueMutex.Unlock()
 }
 
-func withinTimeSpan(driver_ts int64, detect_ts int64, timespan int64) bool {
-	return ((Abs(driver_ts - detect_ts)) / 1e+9) < timespan
-}
-
-func withinDistance(driver GPSLocation, detect GPSLocation, distance int64) bool {
-	lat1 := driver.Location.Latitude
-	long1 := driver.Location.Longitude
-
-	lat2 := detect.Location.Latitude
-	long2 := detect.Location.Longitude
-
-	dist := GetApproxDistance2(lat1, long1, lat2, long2)
-
-	return (dist < float64(distance))
-}
 
 //obsolete as should be deleted
 func RetrieveCollisionList(objecttype GPSLocation) []interface{} {
