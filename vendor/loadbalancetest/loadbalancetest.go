@@ -8,20 +8,20 @@ import (
 	"runtime"
 )
 
-const(
-	json = "{}"
+const (
+	json           = "{}"
 	simplecommand  = "http://localhost:8081/version"
 	complexcommand = "http://localhost:8081/addposition?gps="
- )
+)
 
-func getClimatePayload() *queue.Climatepayload{
+func getClimatePayload() *queue.Climatepayload {
 	cl := &queue.Climatepayload{
 		Ambientemp: 23.3,
-		Cabintemp:19.7,
-		Drivertemp:22.0,
+		Cabintemp:  19.7,
+		Drivertemp: 22.0,
 	}
 
-	return cl;
+	return cl
 }
 
 func getParam1() string {
@@ -32,10 +32,10 @@ func getParam1() string {
 			Latitude:  37.387401,
 			Longitude: -122.035179,
 			Accuracy:  1,
-			Payload:payloadstr,
+			Payload:   payloadstr,
 		},
 		Gpsobject: queue.Car,
-		UI:      uuid.New(),
+		UI:        uuid.New(),
 		Timestamp: 1,
 	}
 
@@ -43,19 +43,19 @@ func getParam1() string {
 	return ajson
 }
 
-func execute(){
+func execute() {
 
-	 cmd := exec.Command("ab","-l","-n 1000","-c 100",complexcommand+getParam1())
+	cmd := exec.Command("ab", "-l", "-n 1000", "-c 100", complexcommand+getParam1())
 	//cmd := exec.Command("ab","-n 100","-c 10",simplecommand)
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Println(fmt.Sprint(err) + ": " + string(output))
 		return
 	}
-    fmt.Println(string(output))
+	fmt.Println(string(output))
 }
 
-func main(){
+func main() {
 
 	if runtime.GOOS == "windows" {
 		fmt.Println("Can't Execute this on a windows machine")

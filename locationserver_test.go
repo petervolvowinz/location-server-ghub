@@ -2,8 +2,6 @@ package main
 
 import "testing"
 
-
-
 func getTestJSONpayload() string {
 	return "{}"
 }

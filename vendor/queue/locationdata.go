@@ -14,8 +14,8 @@ var queueMutex = &sync.Mutex{}
 var once sync.Once
 
 const (
-	Expirationtime = 15 // throw away any entries older that this (seconds)
-	Timedepth = 5 // only consider queue neighbours with in this (seconds)
+	Expirationtime   = 15  // throw away any entries older that this (seconds)
+	Timedepth        = 5   // only consider queue neighbours with in this (seconds)
 	Criticaldistance = 200 // The distance to a bike/car where we issue a warning (meters)
 )
 
@@ -25,27 +25,27 @@ const (
 	Raccoon
 )
 
-var(
+var (
 	instance *dll.List
-	filter *Filtervalues
+	filter   *Filtervalues
 )
 
-type Searchstruct struct{
+type Searchstruct struct {
 	Latitude  float64 `json:"lat"`
 	Longitude float64 `json:"lng"`
-	Distance int64 `json:"distance"`
-	Timespan int64 `json:"timespan"`
+	Distance  int64   `json:"distance"`
+	Timespan  int64   `json:"timespan"`
 }
 
-type Warninglst struct{
-	Warnings []interface{}	`json:"warnings"`
+type Warninglst struct {
+	Warnings []interface{} `json:"warnings"`
 }
 
-type GPSLocation struct{
-	Location Locationdata `json:"Location"`
-	Gpsobject int	  `json:"Gpsobject"`
-	UI uuid.UUID       `json:"UUID"`
-	Timestamp int64    `json:"timestamp"`
+type GPSLocation struct {
+	Location  Locationdata `json:"Location"`
+	Gpsobject int          `json:"Gpsobject"`
+	UI        uuid.UUID    `json:"UUID"`
+	Timestamp int64        `json:"timestamp"`
 }
 
 type Locationdata struct {
@@ -55,12 +55,11 @@ type Locationdata struct {
 	Payload   string  `json:"payload"`
 }
 
-
-type Climatepayload struct{
-	Ambientemp float64 `json:"ambientemp"`
-	Cabintemp float64 `json:"cabintemp"`
-	Drivertemp float64 `json:"drivertemp"`
-	Parkingspots int64 `json:"parkingspots"`
+type Climatepayload struct {
+	Ambientemp   float64 `json:"ambientemp"`
+	Cabintemp    float64 `json:"cabintemp"`
+	Drivertemp   float64 `json:"drivertemp"`
+	Parkingspots int64   `json:"parkingspots"`
 }
 
 /*type SearchJSON struct{
@@ -70,9 +69,7 @@ type Climatepayload struct{
 	TimeSpan  int `json:"timespan"`
 }*/
 
-
-
-func withinTimeAndDistanceFilter(a,b,c interface{}) int {
+func withinTimeAndDistanceFilter(a, b, c interface{}) int {
 
 	c1 := a.(GPSLocation)
 	c2 := b.(GPSLocation)
@@ -81,33 +78,30 @@ func withinTimeAndDistanceFilter(a,b,c interface{}) int {
 	timespan := c3.time
 	distance := c3.distance
 
-	withinTime := withinTimeSpan(c1.Timestamp,c2.Timestamp,timespan)
-	if (withinTime){
-		withinDistance := withinDistance(c1,c2,distance)
-		if (withinDistance){
+	withinTime := withinTimeSpan(c1.Timestamp, c2.Timestamp, timespan)
+	if withinTime {
+		withinDistance := withinDistance(c1, c2, distance)
+		if withinDistance {
 			return 1
-		} else{
+		} else {
 			return 0
 		}
-	} else{
+	} else {
 		return -1
 	}
 
 }
 
-
-
-
 // singleton
-func GetQueue() * dll.List{
+func GetQueue() *dll.List {
 	return GetQueueInstance()
 }
 
-func AddNewPosition(location GPSLocation){
-	AddNewPosition_2(location)
+func AddNewPosition(location GPSLocation) {
+	addNewPosition_2(location)
 }
 
-func AddNewPosition_2(location GPSLocation){
+func addNewPosition_2(location GPSLocation) {
 	location.Timestamp = time.Now().UnixNano()
 
 	queueMutex.Lock()
@@ -117,34 +111,33 @@ func AddNewPosition_2(location GPSLocation){
 	queueMutex.Unlock()
 }
 
-func withinTimeSpan(driver_ts int64,detect_ts int64,timespan int64) bool{
-	return ((Abs(driver_ts - detect_ts))/1e+9) < timespan
+func withinTimeSpan(driver_ts int64, detect_ts int64, timespan int64) bool {
+	return ((Abs(driver_ts - detect_ts)) / 1e+9) < timespan
 }
 
-
-func withinDistance(driver GPSLocation,detect GPSLocation,distance int64) bool{
+func withinDistance(driver GPSLocation, detect GPSLocation, distance int64) bool {
 	lat1 := driver.Location.Latitude
 	long1 := driver.Location.Longitude
 
 	lat2 := detect.Location.Latitude
 	long2 := detect.Location.Longitude
 
-	dist := GetApproxDistance2(lat1,long1,lat2,long2)
+	dist := GetApproxDistance2(lat1, long1, lat2, long2)
 
 	return (dist < float64(distance))
 }
 
 //obsolete as should be deleted
-func RetrieveCollisionList(objecttype GPSLocation)[] interface{}{
+func RetrieveCollisionList(objecttype GPSLocation) []interface{} {
 
-	return RetrieveCollisionList_2(objecttype,Timedepth,Criticaldistance)
+	return RetrieveCollisionList_2(objecttype, Timedepth, Criticaldistance)
 }
 
-func GetDefaultParams() (int64,int64) {
+func GetDefaultParams() (int64, int64) {
 	return Timedepth, Criticaldistance
 }
 
-func RetrieveCollisionList_2(objecttype GPSLocation,timed int64,dist int64,depth...int)[] interface{}{
+func RetrieveCollisionList_2(objecttype GPSLocation, timed int64, dist int64, depth ...int) []interface{} {
 
 	queueMutex.Lock()
 
@@ -153,75 +146,67 @@ func RetrieveCollisionList_2(objecttype GPSLocation,timed int64,dist int64,depth
 		time:     timed,
 	}
 
-	var listofdectees [] interface{}
+	var listofdectees []interface{}
 
-	if (len(depth) > 0){
-		listofdectees = FindAll(objecttype,timedistfilter,withinTimeAndDistanceFilter,depth[0])
-	}else{
-		listofdectees = FindAll(objecttype,timedistfilter,withinTimeAndDistanceFilter)
+	if len(depth) > 0 {
+		listofdectees = FindAll(objecttype, timedistfilter, withinTimeAndDistanceFilter, depth[0])
+	} else {
+		listofdectees = FindAll(objecttype, timedistfilter, withinTimeAndDistanceFilter)
 	}
-
-
 
 	queueMutex.Unlock()
 
-    return listofdectees
+	return listofdectees
 }
 
 //Garbage collection, just pick the last one if it is eligeable
-func Out(){
+func Remove() {
 	// RemoveOldData()
-	RemoveLast()
+	removeLast()
 	log.Info("Q SIZE IS : ", GetQueueInstance().Size())
 }
 
-func RemoveOldData(){
+func RemoveAllOld() {
 	queueMutex.Lock()
 
-	Q := GetQueueInstance()
-	index,_ := Q.Find(func(index int, value interface{}) bool{
-		//log.Info(" index ", index)
-		val := retieree(value.(GPSLocation))
-		return val
-	})
-
+	//Q := GetQueueInstance()
+	index := Find()
 	RemoveAll(index)
 
 	queueMutex.Unlock()
 }
 
-func RemoveLast(){
+func removeLast() {
 	queueMutex.Lock()
 
 	Q := GetQueueInstance()
 	it := Q.Iterator()
 
-	if it.Last() && retieree(it.Value().(GPSLocation)){
-		Q.Remove(Q.Size() -1 )
+	if it.Last() && retieree(it.Value().(GPSLocation)) {
+		Q.Remove(Q.Size() - 1)
 	}
 
 	queueMutex.Unlock()
 }
 
-func retieree(oldie GPSLocation) bool{
+func retieree(oldie GPSLocation) bool {
 
 	currentsecond := time.Now().UnixNano()
 	oldiesecond := oldie.Timestamp
 
-	log.Println("time checking ",(currentsecond - oldiesecond)/1e+9)
-	return (currentsecond -  oldiesecond)/1e+9 > Expirationtime
+	log.Println("time checking ", (currentsecond-oldiesecond)/1e+9)
+	return (currentsecond-oldiesecond)/1e+9 > Expirationtime
 
 }
-
 
 /***************************
  	JSON marshal and unmarshal
 **************************/
 
 // Returns a JSON string of a Climatepayload struct
-func GetClimatepayloadJSON(climate Climatepayload) string{
-	bytes,err := json.Marshal(climate)
-	if (err != nil){
+func GetClimatepayloadJSON(climate Climatepayload) string {
+	bytes, err := json.Marshal(climate)
+	if err != nil {
 		log.Info("could not marshal climate object into json")
 		return ""
 	}
@@ -229,20 +214,20 @@ func GetClimatepayloadJSON(climate Climatepayload) string{
 }
 
 // Returns a JSON string of a GPSLocation JSON
-func GetGPSLocationJSON(gps GPSLocation) string{
+func GetGPSLocationJSON(gps GPSLocation) string {
 
-	bytes,err := json.Marshal(gps)
-	if (err != nil){
+	bytes, err := json.Marshal(gps)
+	if err != nil {
 		log.Error(" json not marshalled ", err)
 	}
 
 	return string(bytes)
 }
 
-func GetGeneralJSON(str interface{}) string{
+func GetGeneralJSON(str interface{}) string {
 
-	bytes,err := json.Marshal(str)
-	if (err != nil){
+	bytes, err := json.Marshal(str)
+	if err != nil {
 		log.Error(" json not marshalled ", err)
 	}
 
@@ -250,12 +235,12 @@ func GetGeneralJSON(str interface{}) string{
 }
 
 //Returns a GPSLocation struct from JSON
-func GetGPSLocationFromJSON(ajson string) GPSLocation{
+func GetGPSLocationFromJSON(ajson string) GPSLocation {
 
 	var bytes = []byte(string(ajson))
 	gps := &GPSLocation{}
-	err := json.Unmarshal(bytes,&gps)
-	if (err != nil){
+	err := json.Unmarshal(bytes, &gps)
+	if err != nil {
 		log.Error("invalid json ", err)
 	}
 
@@ -263,33 +248,31 @@ func GetGPSLocationFromJSON(ajson string) GPSLocation{
 }
 
 // Returns true if JSON is a GPSLocation struct and returns the struct
-func IsValidGPSLocationJSON(ajson string) (bool, *GPSLocation){
+func IsValidGPSLocationJSON(ajson string) (bool, *GPSLocation) {
 
 	var bytes = []byte(ajson)
 	gps := &GPSLocation{}
-	err := json.Unmarshal(bytes,&gps)
+	err := json.Unmarshal(bytes, &gps)
 
-	return (err == nil),gps
+	return (err == nil), gps
 }
 
 // Returns true if JSON is a Searchstruct struct and returns the struct
-func IsValidSearchstructJSON(ajson string) (bool, *Searchstruct){
+func IsValidSearchstructJSON(ajson string) (bool, *Searchstruct) {
 	var bytes = []byte(ajson)
 	srt := &Searchstruct{}
-	err := json.Unmarshal(bytes,&srt)
+	err := json.Unmarshal(bytes, &srt)
 
-	return (err == nil),srt
+	return (err == nil), srt
 }
 
-
 // Returns a json of a warningslist array of Warninglst structs
-func GetWarninglistJSON(warninglist [] interface{}) string{
+func GetWarninglistJSON(warninglist []interface{}) string {
 
 	warnings := &Warninglst{warninglist}
-	result,err := json.Marshal(warnings)
+	result, err := json.Marshal(warnings)
 
-
-	if (err != nil){
+	if err != nil {
 		log.Error("could not build json GPSLocation list ", err)
 		return "{error:" + "json list generation failed}"
 	}
@@ -298,26 +281,21 @@ func GetWarninglistJSON(warninglist [] interface{}) string{
 }
 
 // Returns a new UUID
-func GetUUID()(uuid.UUID){
-	 return uuid.New()
+func GetUUID() uuid.UUID {
+	return uuid.New()
 }
 
 // check params and convert from string
-func ConvertTimeDistanceParams(time string,distance string) (int64,int64,error){
-	times,err:= strconv.ParseInt(time,10, 64)
-	if err != nil{
-		log.Info("time param not parsed")
-		return -1,-1,err
-	}
-	dist,err := strconv.ParseInt(distance,10,64)
+func ConvertTimeDistanceParams(time string, distance string) (int64, int64, error) {
+	times, err := strconv.ParseInt(time, 10, 64)
 	if err != nil {
 		log.Info("time param not parsed")
-		return -1,-1,err
+		return -1, -1, err
 	}
-	return times,dist,nil
+	dist, err := strconv.ParseInt(distance, 10, 64)
+	if err != nil {
+		log.Info("time param not parsed")
+		return -1, -1, err
+	}
+	return times, dist, nil
 }
-
-
-
-
-

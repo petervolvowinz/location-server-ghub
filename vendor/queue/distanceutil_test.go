@@ -10,22 +10,21 @@ import (
 
 func TestGetApproxDistance1(t *testing.T) {
 
-	 lat1 := 37.387401
-	 long1 := -122.035179
+	lat1 := 37.387401
+	long1 := -122.035179
 
-	 lat2 := 37.389649
-	 long2 := -122.034433
+	lat2 := 37.389649
+	long2 := -122.034433
 
-	 expected_result := 260.0
+	expected_result := 260.0
 
-	 outcome := GetApproxDistance1(lat1,long1,lat2,long2)
+	outcome := GetApproxDistance1(lat1, long1, lat2, long2)
 
-	if ( ( math.Abs(math.RoundToEven(outcome)) - expected_result) > 5){
-	 	t.Error("Expected ",260,"+-5 got ",outcome)
-	 }
+	if (math.Abs(math.RoundToEven(outcome)) - expected_result) > 5 {
+		t.Error("Expected ", 260, "+-5 got ", outcome)
+	}
 
 }
-
 
 func TestGetApproxDistance2(t *testing.T) {
 	lat1 := 37.387401
@@ -36,20 +35,19 @@ func TestGetApproxDistance2(t *testing.T) {
 
 	expected_result := 260.0
 
-	outcome := GetApproxDistance2(lat1,long1,lat2,long2)
+	outcome := GetApproxDistance2(lat1, long1, lat2, long2)
 
-	if ( ( math.Abs(math.RoundToEven(outcome)) - expected_result) > 5){
-		t.Error("Expected ",260,"+-5 got ",outcome)
+	if (math.Abs(math.RoundToEven(outcome)) - expected_result) > 5 {
+		t.Error("Expected ", 260, "+-5 got ", outcome)
 	}
 }
-
 
 func TestGetRadians(t *testing.T) {
 	pihalf := math.Pi / 2
 
 	testval := GetRadians(90)
 
-	if ( pihalf != testval ){
+	if pihalf != testval {
 		t.Error("Expected radians(90) to be PI/2")
 	}
 }
@@ -58,26 +56,26 @@ func TestGetJSONFromGPSLocationObject(t *testing.T) {
 
 	gps := &GPSLocation{
 		Location: Locationdata{
-			Latitude:37.387401,
-			Longitude:-122.035179,
-			Accuracy:1,
-	    },
-		Gpsobject:Bike,
-		UI:uuid.New(),
-		Timestamp:1,
+			Latitude:  37.387401,
+			Longitude: -122.035179,
+			Accuracy:  1,
+		},
+		Gpsobject: Bike,
+		UI:        uuid.New(),
+		Timestamp: 1,
 	}
 
 	ajson := GetGPSLocationJSON(*gps)
 	bytes := []byte(string(ajson))
 
 	gpsobject := &GPSLocation{}
-	err := json.Unmarshal(bytes,gpsobject)
+	err := json.Unmarshal(bytes, gpsobject)
 
-    if err != nil{
-    	t.Error( "json could not unmarshal", err )
+	if err != nil {
+		t.Error("json could not unmarshal", err)
 	}
-	if (gps.UI != gpsobject.UI){
-		t.Error(" json convertion failed ",  ajson)
+	if gps.UI != gpsobject.UI {
+		t.Error(" json convertion failed ", ajson)
 	}
 
 }
@@ -87,25 +85,24 @@ func TestUUID(t *testing.T) {
 	uuid := GetUUID()
 	gps := &GPSLocation{
 		Location: Locationdata{
-			Latitude:37.387401,
-			Longitude:-122.035179,
-			Accuracy:1,
+			Latitude:  37.387401,
+			Longitude: -122.035179,
+			Accuracy:  1,
 		},
-		Gpsobject:Bike,
-		UI :uuid,
-		Timestamp:1,
+		Gpsobject: Bike,
+		UI:        uuid,
+		Timestamp: 1,
 	}
 
-	if (gps.UI != uuid){
+	if gps.UI != uuid {
 		t.Error(" error generating uuid ")
 	}
 
 	uuid2 := GetUUID()
-    if (uuid2 == gps.UI){
-    	t.Error("uuid not unique")
+	if uuid2 == gps.UI {
+		t.Error("uuid not unique")
 	}
 }
-
 
 /*
 {
@@ -142,7 +139,7 @@ func TestUUID(t *testing.T) {
         }
     }]
 }
- */
+*/
 
 func gettestWebJSON() string {
 	return `{
@@ -181,7 +178,7 @@ func gettestWebJSON() string {
 }`
 
 }
-func TestWebJSON(t *testing.T){
+func TestWebJSON(t *testing.T) {
 
 	features := &feature{
 		Type: "Feature",
@@ -195,20 +192,19 @@ func TestWebJSON(t *testing.T){
 			UUID:       uuid.New(),
 		},
 		Geometry: geometry{
-			Type:"Point",
-			Coordinates:[]float64{-122.0349794626236,
+			Type: "Point",
+			Coordinates: []float64{-122.0349794626236,
 				37.387971267871},
 		},
 	}
 
 	featurecollection := &featureCollection{
-		Type: "FeatureCollection",
-		Features:          []feature{*features,*features},
+		Type:     "FeatureCollection",
+		Features: []feature{*features, *features},
 	}
 
-
-	bytes,err := json.Marshal(featurecollection)
-	if (err != nil){
+	bytes, err := json.Marshal(featurecollection)
+	if err != nil {
 		t.Error(" json not marshalled ", err)
 	}
 
@@ -216,15 +212,14 @@ func TestWebJSON(t *testing.T){
 	bytes = []byte(string(jsonstring))
 
 	featurecollectionfromjsonstring := &featureCollection{}
-	err = json.Unmarshal(bytes,featurecollectionfromjsonstring)
+	err = json.Unmarshal(bytes, featurecollectionfromjsonstring)
 
-	if (err != nil){
+	if err != nil {
 		t.Error(" json string not unmarshalled to featureCollection ", err)
 	}
-	if (featurecollectionfromjsonstring.Type != featurecollection.Type){
-		t.Error(" featurecollection josn to object is not marshalled correctly " )
+	if featurecollectionfromjsonstring.Type != featurecollection.Type {
+		t.Error(" featurecollection josn to object is not marshalled correctly ")
 	}
-
 
 }
 
@@ -232,60 +227,69 @@ func getwarningsJSON() string {
 	return `{"warnings":[{"Location":{"lat":37.390750000000104,"lng":-122.03407102774996,"accuracy":1,"payload":"{\"ambientemp\":23.3,\"cabintemp\":19.7,\"drivertemp\":22,\"parkingspots\":0}"},"Gpsobject":1,"UUID":"78401d36-716d-4670-9a90-18b0483f94e4","Timestamp":1570752510331861000}]}`
 }
 
-func TestResultList(t *testing.T){
+func TestResultList(t *testing.T) {
 	jsonStr := getwarningsJSON()
 
 	obj := &Warninglst{}
-	err := json.Unmarshal([]byte(jsonStr),obj)
+	err := json.Unmarshal([]byte(jsonStr), obj)
 
-	if (err != nil){
+	if err != nil {
 		t.Error(" json string not unmarshalled to Warninglst ", err)
 	}
 }
 
-
-func TestTimeSpanFunc(t *testing.T){
+func TestTimeSpanFunc(t *testing.T) {
 
 	ts1 := time.Now().UnixNano()
-	time.Sleep(1*time.Second)
+	time.Sleep(1 * time.Second)
 	ts2 := time.Now().UnixNano()
 
-	if withinTimeSpan(ts1,ts2,Timedepth) == false{
+	if withinTimeSpan(ts1, ts2, Timedepth) == false {
 		t.Error(" 1 second should be within timespan")
 	}
-	time.Sleep(5*time.Second)
+	time.Sleep(5 * time.Second)
 	ts2 = time.Now().UnixNano()
-	if withinTimeSpan(ts1,ts2,Timedepth){
+	if withinTimeSpan(ts1, ts2, Timedepth) {
 		t.Error(" 6 seconds should be outside timespan")
 	}
 
 }
 
-
-func TestWithinDistanceFunc(t *testing.T){
+func TestWithinDistanceFunc(t *testing.T) {
 	lat1 := 37.387401
 	long1 := -122.035179
 
-	loc1 := GPSLocation{Location:Locationdata{Latitude:lat1,Longitude:long1,Accuracy:0,Payload:"{}"}}
+	loc1 := GPSLocation{Location: Locationdata{Latitude: lat1, Longitude: long1, Accuracy: 0, Payload: "{}"}}
 
 	lat2 := 37.389649
 	long2 := -122.034433
 
-	loc2 := GPSLocation{Location:Locationdata{Latitude:lat2,Longitude:long2,Accuracy:0,Payload:"{}"}}
+	loc2 := GPSLocation{Location: Locationdata{Latitude: lat2, Longitude: long2, Accuracy: 0, Payload: "{}"}}
 
-	if withinDistance(loc1,loc2,300) == false{
+	if withinDistance(loc1, loc2, 300) == false {
 		t.Error("expected within distance")
 	}
 
-	if withinDistance(loc2,loc1,300) == false{
+	if withinDistance(loc2, loc1, 300) == false {
 		t.Error("expected within distance")
 	}
 
-	if withinDistance(loc1,loc2,250){
+	if withinDistance(loc1, loc2, 250) {
 		t.Error("expected outside distance")
 	}
 
-	if withinDistance(loc2,loc1,250){
+	if withinDistance(loc2, loc1, 250) {
 		t.Error("expected outside distance")
 	}
+}
+
+func TestTimeTest(t *testing.T) {
+	tss := time.Now().UnixNano()
+	time.Sleep(100 * time.Millisecond)
+	ts1 := time.Now().UnixNano()
+
+	if (ts1 - tss) < (100 * time.Millisecond).Nanoseconds() {
+		t.Error(" Sleep should be greater or equal to 100 ms")
+	}
+
 }

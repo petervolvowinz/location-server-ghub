@@ -3,36 +3,33 @@ package main
 import (
 	"fmt"
 	"github.com/google/uuid"
-	"io/ioutil"
 	log "github.com/sirupsen/logrus"
+	"io/ioutil"
 	"net/http"
 	"queue"
 	"time"
 )
 
-
 const (
-	serverurl = "https://locationserver.uswest2.development.volvo.care/addposition?gps="
+	serverurl  = "https://locationserver.uswest2.development.volvo.care/addposition?gps="
 	serverurl2 = "https://locationserver.uswest2.development.volvo.care/retrieve?search="
-	localurl  = "http://localhost:8081/addposition?gps="
+	localurl   = "http://localhost:8081/addposition?gps="
 	localurl2  = "http://localhost:8081/retrieve?search="
 )
 
-
-type  latlng struct {
+type latlng struct {
 	lat float64
 	lng float64
 }
 
-func generatePositionsAlongPastoriaAvenue()[] latlng{
-	var list []  latlng
-
+func generatePositionsAlongPastoriaAvenue() []latlng {
+	var list []latlng
 
 	k := 0.325603
 	m := -134.2086114
 
-    // Generate positions
-	for startx := 37.38755 ; startx < 37.390784 ; startx = startx + 0.0001{
+	// Generate positions
+	for startx := 37.38755; startx < 37.390784; startx = startx + 0.0001 {
 		alatlnng := &latlng{
 			lat: startx,
 			lng: k*startx - m, // equation of the line...
@@ -43,22 +40,22 @@ func generatePositionsAlongPastoriaAvenue()[] latlng{
 	return list
 }
 
-func getClimatePayload() *queue.Climatepayload{
+func getClimatePayload() *queue.Climatepayload {
 	cl := &queue.Climatepayload{
 		Ambientemp: 23.3,
-		Cabintemp:19.7,
-		Drivertemp:22.0,
+		Cabintemp:  19.7,
+		Drivertemp: 22.0,
 	}
 
-	return cl;
+	return cl
 }
 
-func getSearchParam() string{
+func getSearchParam() string {
 	search := &queue.Searchstruct{
-		Latitude:37.387401,
-		Longitude:-122.035179,
-		Distance:200,
-		Timespan:5,
+		Latitude:  37.387401,
+		Longitude: -122.035179,
+		Distance:  200,
+		Timespan:  5,
 	}
 
 	return queue.GetGeneralJSON(search)
@@ -72,17 +69,16 @@ func getParam1() string {
 			Latitude:  37.387401,
 			Longitude: -122.035179,
 			Accuracy:  1,
-			Payload:payloadstr,
+			Payload:   payloadstr,
 		},
 		Gpsobject: queue.Car,
-		UI:      uuid.New(),
+		UI:        uuid.New(),
 		Timestamp: 1,
 	}
 
 	ajson := queue.GetGPSLocationJSON(*gps)
 	return ajson
 }
-
 
 /******* JSON returned from addposition for climate data *********
 {"Warnings":
@@ -133,10 +129,10 @@ func getParam2() string {
 			Latitude:  37.387401,
 			Longitude: -122.035179,
 			Accuracy:  1,
-			Payload:payloadstr,
+			Payload:   payloadstr,
 		},
 		Gpsobject: queue.Car,
-		UI:      uuid.New(),
+		UI:        uuid.New(),
 		Timestamp: 1,
 	}
 
@@ -144,56 +140,52 @@ func getParam2() string {
 	return ajson
 }
 
-
-
-
-func simpleSimulation(ch chan int){
+func simpleSimulation(ch chan int) {
 	for {
 		json := getParam1()
-		resp1, err := http.Get(localurl+json)
+		resp1, err := http.Get(localurl + json)
 		if err != nil {
 			log.Println(err)
-		}else {
-			bodybytes , err := ioutil.ReadAll(resp1.Body)
-			if (err != nil){
+		} else {
+			bodybytes, err := ioutil.ReadAll(resp1.Body)
+			if err != nil {
 				log.Error(" could  not read http body data ", err)
 			}
 			log.Info(string(bodybytes))
 			resp1.Body.Close()
 		}
 
-		time.Sleep(time.Second*2)
+		time.Sleep(time.Second * 2)
 
 		json = getParam2()
 		log.Info("addposition ", json)
 
-		resp2, err := http.Get(localurl+json)
-        resp3, err := http.Get(localurl2+getSearchParam())
+		resp2, err := http.Get(localurl + json)
+		resp3, err := http.Get(localurl2 + getSearchParam())
 
-        bytes,_ := ioutil.ReadAll(resp3.Body)
-        log.Info("retrieve ", string(bytes))
+		bytes, _ := ioutil.ReadAll(resp3.Body)
+		log.Info("retrieve ", string(bytes))
 
 		if err != nil {
 			log.Println(err)
-		}else {
-			bodybytes , err := ioutil.ReadAll(resp2.Body)
-			if (err != nil){
+		} else {
+			bodybytes, err := ioutil.ReadAll(resp2.Body)
+			if err != nil {
 				log.Error(" could  not read http body data ", err)
 			}
 			log.Info(string(bodybytes))
 			resp2.Body.Close()
 		}
-		time.Sleep(1* time.Second)
+		time.Sleep(1 * time.Second)
 	}
 	ch <- 1 // stop
 }
 
-
-func main(){
+func main() {
 
 	var ch chan int = make(chan int)
 	go simpleSimulation(ch)
 	log.Info(" Waiting for subscription to end ...")
-	fmt.Println(<-ch);
+	fmt.Println(<-ch)
 
 }
