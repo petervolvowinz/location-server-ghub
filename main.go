@@ -10,6 +10,8 @@ import (
 	"net/http"
 )
 
+var locationdataHandler queue.LocationDataHandler
+
 func addPosition(json string) {
 	log.Info("trying to connect")
 
@@ -18,7 +20,7 @@ func addPosition(json string) {
 	if valid {
 		riderObject.Timestamp = time.Now().UnixNano() // timestamp as soon as we can.
 		log.Info("adding json to server")
-		queue.AddNewPosition(*riderObject)
+		locationdataHandler.AddNewPosition(*riderObject)
 	} else {
 		log.Info("json invalid, nothing added to queue")
 	}
@@ -44,7 +46,7 @@ func handleNewEntries(w http.ResponseWriter, req *http.Request) {
 
 	if err != nil {
 		log.Info("Invalid time and/or distance params  sent from client, using defaults as fallback")
-		t_param, d_param = queue.GetDefaultParams()
+		t_param, d_param = locationdataHandler.GetDefaultParams()
 	}
 
 	valid, riderObject := queue.IsValidGPSLocationJSON(json)
@@ -52,11 +54,11 @@ func handleNewEntries(w http.ResponseWriter, req *http.Request) {
 	if valid {
 
 		riderObject.Timestamp = time.Now().UnixNano() // timestamp as soon as we can.
-		queue.AddNewPosition(*riderObject)
+		locationdataHandler.AddNewPosition(*riderObject)
 
 		// warninglist := queue.RetrieveCollisionList(*riderObject)
 
-		warninglist := queue.RetrieveCollisionList_2(*riderObject, t_param, d_param)
+		warninglist := locationdataHandler.RetrieveCollisionList(*riderObject, t_param, d_param)
 		ajsonlist := queue.GetWarninglistJSON(warninglist)
 
 		w.WriteHeader(http.StatusOK)
@@ -100,7 +102,7 @@ func handleGPSFence(w http.ResponseWriter, req *http.Request) {
 		//timespan := searchObject.Timespan
 		//distance := searchObject.Distance
 
-		list := queue.RetrieveCollisionList_2(*GPSSearchObject, searchObject.Timespan, searchObject.Distance, 30)
+		list := locationdataHandler.RetrieveCollisionList(*GPSSearchObject, searchObject.Timespan, searchObject.Distance, 30)
 		json := queue.ConvertToMapBoxFreindlyJSON(list)
 
 		if json == "" {
@@ -132,7 +134,7 @@ func ServeMap() error {
 // every 100 ms seconds dispose...
 func Dispose() {
 	for {
-		queue.Remove()
+		locationdataHandler.Remove()
 		var sleep = time.Millisecond * 100
 		time.Sleep(sleep)
 	}
@@ -141,7 +143,7 @@ func Dispose() {
 func main() {
 
 	log.Info("starting server ...")
-	queue.InitRoadUsers()
+	locationdataHandler.Init()
 	go Dispose()
 
 	http.HandleFunc("/addposnoret", addNoJsonResponse)

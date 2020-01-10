@@ -23,7 +23,7 @@ func (Q *Queue)  GetNearbyRoadUsers(comparee interface{}, filterdata interface{}
 		breaklimit = depth[0]
 	}
 
-	iterator := queueinstance.Iterator()
+	iterator := Q.queue.Iterator()
 	iterationcounter := 0
 	for iterator.Next() {
 		iterationcounter++
@@ -59,9 +59,12 @@ func (Q *Queue) GarbageCollect(){
 	if it.Last() && toberetired(it.Value().(GPSLocation)) {
 		qInst.Remove(qInst.Size() - 1)
 	}
+	log.Info("Q SIZE IS : ", qInst.Size())
+
 }
 
-func (Q *Queue) getNearbyRoadUserCandidate(){
+func (Q *Queue) getNearbyRoadUserCandidate(driver GPSLocation,detect GPSLocation,vehicletype int) bool{
 	fmt.Println("Implementatiom of getNearbyRoadUserCandidat NOT DONE")
+	return false
 }
 

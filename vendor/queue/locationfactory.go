@@ -6,6 +6,12 @@ import (
 	"sync"
 )
 
+const (
+	Expirationtime   = 15  // throw away any entries older that this (seconds)
+	Timedepth        = 5   // only consider queue neighbours with in this (seconds)
+	Criticaldistance = 200 // The distance to a bike/car where we issue a warning (meters)
+)
+
 // var queueMutex = &sync.Mutex{}
 var queueOnce sync.Once
 var treeOnce sync.Once
@@ -18,7 +24,7 @@ type  RoadUsers interface{
 	AddRoadUserPosition(val interface{})
 	GetNearbyRoadUsers(comparee interface{}, filterdata interface{}, comparator Filter, depth ...int) []interface{}
 	GarbageCollect()
-	getNearbyRoadUserCandidate()
+	getNearbyRoadUserCandidate(driver GPSLocation,detect GPSLocation,vehicletype int) bool
 }
 
 var DataStructureSelection = "T"
@@ -30,11 +36,6 @@ type Queue struct{
 
 type TreeExtended struct{
 	tree *rbt.Tree
-}
-
-func InitRoadUsers() {
-	Rf := RoadUsersFactory()
-	locations = Rf("")
 }
 
 // instance variables
@@ -52,7 +53,22 @@ func GetQueue() *dll.List{
 }
 
 func byGPSIndexation(a,b interface {}) int {
-	return 0
+
+	c1  := a.(GPSLocation)
+	c2  := b.(GPSLocation)
+
+	zindex_1 := c1.Location.Zindex
+	zindex_2 := c2.Location.Zindex
+
+	switch {
+	case zindex_1 > zindex_2:
+		return 1
+	case zindex_1 < zindex_2:
+		return -1
+	default:
+		return 0
+
+	}
 }
 
 func GetTree() *rbt.Tree{
@@ -120,3 +136,14 @@ func withinDistance(driver GPSLocation, detect GPSLocation, distance int64) bool
 
 	return (dist < float64(distance))
 }
+
+/*func retieree(oldie GPSLocation) bool {
+
+	currentsecond := time.Now().UnixNano()
+	oldiesecond := oldie.Timestamp
+
+	log.Println("time checking ", (currentsecond-oldiesecond)/1e+9)
+	return (currentsecond-oldiesecond)/1e+9 > Expirationtime
+
+}*/
+

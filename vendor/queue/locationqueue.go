@@ -1,33 +1,16 @@
 package queue
 
-import (
-	dll "github.com/emirpasic/gods/lists/doublylinkedlist"
-	"log"
-)
 
-var (
-	queueinstance *dll.List
-)
-
-// singleton
-func GetQueueInstance() *dll.List {
-
-	once.Do(func() {
-		queueinstance = dll.New()
-	})
-
-	return queueinstance
-}
 
 func Add(object interface{}) {
-	if queueinstance != nil {
-		queueinstance.Prepend(object)
+	if locationdata != nil {
+		locationdata.AddRoadUserPosition(object)
 	}
 }
 
 //finds all according to the filter and the comparator function
 func FindAll(comparee interface{}, filterdata interface{}, comparator Filter, depth ...int) []interface{} {
-	var resultarray []interface{}
+	/*var resultarray []interface{}
 
 	var breaklimit int = 10 // only return maximum 10 data points for now
 	if len(depth) > 0 {
@@ -49,11 +32,17 @@ func FindAll(comparee interface{}, filterdata interface{}, comparator Filter, de
 		}
 	}
 
-	return resultarray
+	return resultarray*/
+	var breaklimit int = 10 // only return maximum 10 data points for now
+	if len(depth) > 0 {
+		breaklimit = depth[0]
+	}
+
+	return locationdata.GetNearbyRoadUsers(comparee,filterdata,comparator,breaklimit)
 }
 
 
-func Find() int {
+/*func Find() int {
 
 	index, _ := queueinstance.Find(func(index int, value interface{}) bool {
 		//log.Info(" index ", index)
@@ -75,4 +64,4 @@ func RemoveAll(fromindex int) {
 	if !newinstance.Empty() {
 		queueinstance = newinstance
 	}
-}
+}*/

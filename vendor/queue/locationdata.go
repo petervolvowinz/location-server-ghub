@@ -14,12 +14,6 @@ var queueMutex = &sync.Mutex{}
 var once sync.Once
 
 const (
-	Expirationtime   = 15  // throw away any entries older that this (seconds)
-	Timedepth        = 5   // only consider queue neighbours with in this (seconds)
-	Criticaldistance = 200 // The distance to a bike/car where we issue a warning (meters)
-)
-
-const (
 	Bike int = iota
 	Car
 	Raccoon
@@ -53,6 +47,7 @@ type Locationdata struct {
 	Longitude float64 `json:"lng"`
 	Accuracy  float64 `json:"accuracy"`
 	Payload   string  `json:"payload"`
+	Zindex    uint64  `json:zindex`
 }
 
 type Climatepayload struct {
@@ -62,40 +57,51 @@ type Climatepayload struct {
 	Parkingspots int64   `json:"parkingspots"`
 }
 
-/*type SearchJSON struct{
-	Latitude  float64 `json:"lat"`
-	Longitude float64 `json:"lng"`
-	Distance  int `json:"dist"`
-	TimeSpan  int `json:"timespan"`
-}*/
-
-
-func AddNewPosition(location GPSLocation) {
-	addNewPosition_2(location)
+type LocationData interface{
+	AddNewPosition(location GPSLocation)
+	GetDefaultParams()(int64,int64)
+	RetrieveCollisionList(objecttype GPSLocation, timed int64, dist int64, depth ...int) []interface{}
+	Remove()
+	Init()
 }
 
-func addNewPosition_2(location GPSLocation) {
-	location.Timestamp = time.Now().UnixNano()
+type LocationDataHandler struct{
+	users RoadUsers
+}
 
+
+var (
+	locationdata RoadUsers
+	locationdatainstantiator = RoadUsersFactory()
+	datahandler LocationDataHandler
+)
+
+func GetLocationDataInstance() RoadUsers {
+	locationdata = locationdatainstantiator("T")
+	return locationdata
+}
+
+/****** Implementation of LocationData interface *********/
+
+func (Lh *LocationDataHandler) Init(){
+	Lh.users = GetLocationDataInstance()
+}
+
+func (Lh *LocationDataHandler) AddNewPosition(location GPSLocation) {
 	queueMutex.Lock()
 
-	Add(location) // add entry first...
+	location.Timestamp = time.Now().UnixNano()
+	Lh.users.AddRoadUserPosition(location)
 
 	queueMutex.Unlock()
 }
 
 
-//obsolete as should be deleted
-func RetrieveCollisionList(objecttype GPSLocation) []interface{} {
-
-	return RetrieveCollisionList_2(objecttype, Timedepth, Criticaldistance)
-}
-
-func GetDefaultParams() (int64, int64) {
+func  (Lh *LocationDataHandler) GetDefaultParams() (int64, int64) {
 	return Timedepth, Criticaldistance
 }
 
-func RetrieveCollisionList_2(objecttype GPSLocation, timed int64, dist int64, depth ...int) []interface{} {
+func (Lh *LocationDataHandler) RetrieveCollisionList(objecttype GPSLocation, timed int64, dist int64, depth ...int) []interface{} {
 
 	queueMutex.Lock()
 
@@ -106,11 +112,11 @@ func RetrieveCollisionList_2(objecttype GPSLocation, timed int64, dist int64, de
 
 	var listofdectees []interface{}
 
+	breaklimit := 10
 	if len(depth) > 0 {
-		listofdectees = FindAll(objecttype, timedistfilter, withinTimeAndDistanceFilter, depth[0])
-	} else {
-		listofdectees = FindAll(objecttype, timedistfilter, withinTimeAndDistanceFilter)
+		breaklimit = depth[0]
 	}
+	listofdectees = Lh.users.GetNearbyRoadUsers(objecttype,timedistfilter,withinTimeAndDistanceFilter,breaklimit)
 
 	queueMutex.Unlock()
 
@@ -118,13 +124,13 @@ func RetrieveCollisionList_2(objecttype GPSLocation, timed int64, dist int64, de
 }
 
 //Garbage collection, just pick the last one if it is eligeable
-func Remove() {
-	// RemoveOldData()
-	removeLast()
-	log.Info("Q SIZE IS : ", GetQueueInstance().Size())
+func   (Lh *LocationDataHandler) Remove() {
+	queueMutex.Lock()
+	Lh.users.GarbageCollect()
+	queueMutex.Unlock()
 }
 
-func RemoveAllOld() {
+/*func RemoveAllOld() {
 	queueMutex.Lock()
 
 	//Q := GetQueueInstance()
@@ -145,20 +151,11 @@ func removeLast() {
 	}
 
 	queueMutex.Unlock()
-}
+}*/
 
-func retieree(oldie GPSLocation) bool {
-
-	currentsecond := time.Now().UnixNano()
-	oldiesecond := oldie.Timestamp
-
-	log.Println("time checking ", (currentsecond-oldiesecond)/1e+9)
-	return (currentsecond-oldiesecond)/1e+9 > Expirationtime
-
-}
 
 /***************************
- 	JSON marshal and unmarshal
+ 	JSON marshal and unmarshal uti
 **************************/
 
 // Returns a JSON string of a Climatepayload struct
