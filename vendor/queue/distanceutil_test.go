@@ -1,6 +1,7 @@
 package queue
 
 import (
+	"GPSGeneration"
 	"encoding/json"
 	"github.com/google/uuid"
 	"math"
@@ -291,5 +292,31 @@ func TestTimeTest(t *testing.T) {
 	if (ts1 - tss) < (100 * time.Millisecond).Nanoseconds() {
 		t.Error(" Sleep should be greater or equal to 100 ms")
 	}
+
+}
+
+func GpsPositionsInsideOutsideFence(t *testing.T){
+
+	p1 := &GPSGeneration.Position{
+		Latitude:37.392009,
+		Longitude:-122.037568,
+	}
+	p2 :=&GPSGeneration.Position{
+		Latitude:37.422009,
+		Longitude:-122.137568,
+	}
+
+
+	positions := GPSGeneration.GenerateNGPSPoints(1000,*p1,*p2)
+
+	fence := GPSGeneration.BuildFence(*p1,*p2)
+
+	for i := 0; i < len(positions); i++{
+		p := positions[i]
+		if fence.IsGeoPositionInsideFence(p) == false {
+			t.Error("generated position should be inside of fence ")
+		}
+	}
+
 
 }

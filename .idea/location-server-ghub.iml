@@ -3,6 +3,7 @@
   <component name="Go" enabled="true" />
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$" />
+    <content url="file://$MODULE_DIR$/vendor/GPSGeneration" />
     <content url="file://$MODULE_DIR$/vendor/client" />
     <content url="file://$MODULE_DIR$/vendor/loadbalancetest" />
     <content url="file://$MODULE_DIR$/vendor/queue" />
