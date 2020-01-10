@@ -40,7 +40,7 @@ func (T TreeExtended) AddRoadUserPosition(object interface {}){
 
 	gps := object.(GPSLocation)
 	gps.Location.Zindex = GetZorderIndex(gps.Location.Latitude,gps.Location.Longitude)
-	T.tree.Put(object,object)
+	T.tree.Put(gps,gps)
 }
 
 // Find predecessor and successor to a tree node. O(h) where the h is height of the tree. h = log n at worst case
@@ -107,7 +107,7 @@ func (T *TreeExtended)  GetNearbyRoadUsers(comparee interface{}, filterdata inte
 			}
 		}
 		if suc.Key != nil {
-			compresult := comparator(pre.Key, comparee, filterdata)
+			compresult := comparator(suc.Key, comparee, filterdata)
 			if (compresult == 1) {
 				if (!IsMemberOf(listofdectees, suc.Key.(GPSLocation))) {
 					listofdectees = append(listofdectees, suc.Key.(GPSLocation))
