@@ -26,7 +26,7 @@ There are currently 4 apis:
      }
    } 
   
-  => https:/serverurl/addposnoret?gps=<json>
+  => https://<serverurl>/addposnoret?gps=<json>
   
   /addposition
   Adds the new position, returns gps positions for objects within d meters during a t timespan.
@@ -57,7 +57,7 @@ There are currently 4 apis:
    Ex:
    200
    
-   => https:/serverurl/addposnoret?gps=<json>&timespan=5&distance=200
+   => https://<serverurl>/addposnoret?gps=<json>&timespan=5&distance=200
    <=
     {"warnings":[{"Location":{"lat":37.385997,"lng":-122.03923636959762,"accuracy":1,
     	"payload":"{\"ambientemp\":5.9,\"cabintemp\":18.5,\"drivertemp\":21.8,\"parkingspots\":94,\"vehicleid\":\"1\"}"},
@@ -94,7 +94,7 @@ There are currently 4 apis:
   Ex:
   200
   
-  => https://locationserver.uswest2.development.volvo.care/retrieve?search={
+  => https://<serverurl>/retrieve?search={
   	"lat":37.123,
  	"lng":-122.342,
  	"timespan":10,
@@ -120,7 +120,7 @@ There are currently 4 apis:
   This is a mapbox (https://www.mapbox.com) freindly JSON.
   
   Javascript Ex:
-  $.getJSON('https://locationserver.uswest2.development.volvo.care/retrieve?search={"lat":'+ lat +',"lng":' + lon + ', 	   		"timespan":10,"distance":'+ distance +'}', function(data) {
+  $.getJSON('https://<serverurl>/retrieve?search={"lat":'+ lat +',"lng":' + lon + ', 	   		"timespan":10,"distance":'+ distance +'}', function(data) {
     ...
   }
   
@@ -150,10 +150,9 @@ There are currently 4 apis:
   }
   
   ```
-## Deployment
+## Deployment, Running
 
 The server is built using a Dockerfile which is subsequently used for deployment:
-
 ```
 FROM golang:alpine AS build-env
 
@@ -182,7 +181,9 @@ USER go
 EXPOSE 8081
 ENTRYPOINT  ./locationserver
 ```
-Tagging scheme, which is used as the image build trigger.
+
+Running and building without Docker - also make sure vendor(queue) dependencies are built:
 ```
-git tag release-x.y.z-demo
+go build main.go
+./main
 ```
