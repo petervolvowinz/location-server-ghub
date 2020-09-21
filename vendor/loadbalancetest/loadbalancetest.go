@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/google/uuid"
-	"os/exec"
 	"queue"
+	"os/exec"
 	"runtime"
 )
 

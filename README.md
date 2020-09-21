@@ -1,6 +1,12 @@
 # location-server
 
-A "real-time" location server based on GPS position. The principle is to implement a server solution that is able for a certain time interval handle GPS position based requests. The client request is to identify objects such as vehicles and vrus within a certain distance d and time depth t from when the request was recieved. The entries are disposed of after time T. Clients are identified using universal identifiers. The server is currently configured to handle two types of objects identified as vehicle and bike. The server itself does not handle any logic apart from GPS position and time. For each entry,  clients can/should add a payload which is a string of any content - in our examples we have been using a JSON payload.
+A "real-time" location server based on GPS position. The principle is to implement a server solution that is able for a 
+certain time interval handle GPS position based requests. The client request is to identify objects such as vehicles and 
+vrus within a certain distance d and time depth t from when the request was recieved. 
+The entries are disposed of after time T. Clients are identified using universal identifiers. 
+The server is currently configured to handle two types of objects identified as vehicle and bike. 
+The server itself does not handle any logic apart from GPS position and time. 
+For each entry,  clients can/should add a payload which is a string of any content - in our examples we have been using a JSON payload.
 
 The idea behind using universal identifiers is that the clients handle and decide how they are identified and for how long. It also anonymizes and removes the need to use vehicle identification numbers, but not only that it also gives other types of "objects" means of identification. There is no persistence, and once time T has passed the data cannot be retrieved again.
 
@@ -94,7 +100,7 @@ There are currently 4 apis:
   Ex:
   200
   
-  => https://locationserver.uswest2.development.volvo.care/retrieve?search={
+  => https://localhost:8081/retrieve?search={
   	"lat":37.123,
  	"lng":-122.342,
  	"timespan":10,
@@ -120,7 +126,7 @@ There are currently 4 apis:
   This is a mapbox (https://www.mapbox.com) freindly JSON.
   
   Javascript Ex:
-  $.getJSON('https://locationserver.uswest2.development.volvo.care/retrieve?search={"lat":'+ lat +',"lng":' + lon + ', 	   		"timespan":10,"distance":'+ distance +'}', function(data) {
+  $.getJSON('https://localhost:8081/retrieve?search={"lat":'+ lat +',"lng":' + lon + ', 	   		"timespan":10,"distance":'+ distance +'}', function(data) {
     ...
   }
   
@@ -182,8 +188,10 @@ USER go
 EXPOSE 8081
 ENTRYPOINT  ./locationserver
 ```
-Furthermore, the github account is currently tied to quay.io which builds the Docker image and then spinnaker and kubernetes handles the deployment to the cloud. 
-Tagging scheme, which is used as the image build trigger.
-```
-git tag release-x.y.z-demo
-```
+
+For current and future real world deployments contact admin. 
+
+**TODO**
+- Scale, using rbtree
+- Write tests, add build server for CI
+
