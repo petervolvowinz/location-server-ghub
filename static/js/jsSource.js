@@ -13,7 +13,8 @@ var filterType = ['match', ['get', 'Icontype'], ["car","bicycle"], true, false];
 var layerTypeObject = document.getElementById('layerTypeObject');
 var distanceItem = document.getElementById('distance');
 
-
+var lat = 0
+var lon = 0
 
 // Utility function checks if we have a uuid in sharedLocations array
 function uuidMemberTest(sharedLocations,uuid){
@@ -38,8 +39,22 @@ function countCarsAndBikes(icontype) {
 }
 
 
-mapboxgl.accessToken = 'pk.eyJ1IjoibWFyaWEtaTI4MyIsImEiOiJjamVqMDVxdm4zYzl5MnBsbnZhZjV1MDkyIn0.bl4Y0AewatInkbnEfTs6Pg' 
+mapboxgl.accessToken = 'pk.eyJ1IjoibWFyaWEtaTI4MyIsImEiOiJjamVqMDVxdm4zYzl5MnBsbnZhZjV1MDkyIn0.bl4Y0AewatInkbnEfTs6Pg'
 
+
+var metersPerPixel = function(latitude, zoomLevel) {
+  var earthCircumference = 40075017;
+  var latitudeRadians = latitude * (Math.PI/180);
+  return earthCircumference * Math.cos(latitudeRadians) / Math.pow(2, zoomLevel + 8);
+};
+
+var pixelValue = function(latitude, meters, zoomLevel) {
+  return meters / metersPerPixel(latitude, map.getZoom);
+};
+
+const metersToPixels = function (meters,latitude){
+  return meters * metersPerPixel(latitude,map.getZoom())
+}
 //we need it to calculate the size of the grey range
 const metersToPixelsAtMaxZoom = (meters, latitude) =>
   meters / 0.075 / Math.cos(latitude * Math.PI / 180)
@@ -49,11 +64,13 @@ var map = new mapboxgl.Map({
   style: 'mapbox://styles/mapbox/dark-v9',//'mapbox://styles/mapbox/satellite-streets-v10',
   center: [-121.076168,37.541611], 
   zoom: 5.6,
+  maxZoom: 20
 });
   
-
+// console.log("here", map.getCenter());
 distanceItem.addEventListener('change', function(e) {
   distance = document.getElementById('distance').value;
+  pixels = metersToPixels(distance,lat)
   var radiusCircle = {
     stops: [
               [0, 0],
@@ -66,12 +83,11 @@ distanceItem.addEventListener('change', function(e) {
 });
 
 
-
 var geolocate = new mapboxgl.GeolocateControl(({
   positionOptions: {
       enableHighAccuracy: true
   },
-  trackUserLocation: true
+  trackUserLocation: false
 }));
 
 map.addControl(geolocate);
@@ -104,6 +120,22 @@ map.on('load', function() {
     }
   });
 
+  var dbclick = false
+
+  map.on('dblclick', function(e) {
+    console.log('A dblclick event has occurred at ' + e.lngLat);
+    lat = e.lngLat.lat
+    lon = e.lngLat.lng
+    dbclick = true
+  });
+
+  map.on('sourcedata', function(e) {
+    if (e.isSourceLoaded && dbclick) {
+      renderDistance()
+      dbclick = false
+    }
+  });
+
   //Count car and bike on fake gps data
   fakeCoord.features.forEach(function(feature,rowIndex) {
     var IcontypeObject = feature.properties['Icontype'];     
@@ -116,81 +148,10 @@ map.on('load', function() {
   });
   document.getElementById("totCars").innerHTML = "  " + carCount;
   document.getElementById("totBicycle").innerHTML = "  " + bicycleCount;
-  
-
 
   // geolocate.trigger();
   geolocate.on('geolocate', function(e) {
-    lon = e.coords.longitude;
-    lat = e.coords.latitude
-    position = [lon, lat];
-    console.log("My position = " + position);
 
-    if(alreadyExsist == 0) { //seems that it execute this geolocate twice and I need to do it just once
-
-      //draw the gray range circle 
-      map.addSource("source_range_circle", {
-        "type": "geojson",
-        "data": {
-          "type": "FeatureCollection",
-          "features": [{
-            "type": "Feature",
-            "geometry": {
-              "type": "Point",
-              "coordinates": [lon,lat], 
-            }
-          }]
-        }
-      });
-
-      map.addLayer({
-        "id": "circleRange",
-        "type": "circle",
-        "source": "source_range_circle",
-        "paint": {
-          "circle-radius": {
-            stops: [
-              [0, 0],
-              [20, metersToPixelsAtMaxZoom(distance, lat)]
-            ],
-            base: 2
-          },
-          "circle-color": "white",
-          "circle-opacity": 0.3
-        }
-      });
-      //END to draw the gray range circle 
-
-
-
-      map.addLayer({
-        id: 'shareLocationsDot',
-        type: 'circle', 
-        source: {
-          type: 'geojson',
-          data: {
-            type: "FeatureCollection",
-            features: shareLocations
-          }
-        },
-        filter: ['all', filterType],
-        paint: {
-          'circle-color': [                       
-            'match',
-              ['get', 'Icontype'],
-              'car',  [ 'case',
-                ["<=", ['number', ['get', 'cabintemp']], 50], '#F87431',
-                ["<=", ['number', ['get', 'cabintemp']], 70], '#E55451',
-                ["<=", ['number', ['get', 'cabintemp']], 80], '#F778A1',
-                '#F87431'
-              ],
-              /* other */ '#1589FF' //bicycle
-          ],
-          "circle-radius": 3
-        }
-      });
-      alreadyExsist = 1;
-    }
   });
   
   //Add change event on selection of car or bicycle in dropdown menu
@@ -217,9 +178,8 @@ map.on('load', function() {
       $.ajaxSetup({
         async: false
       });
-    
       //$.getJSON('http://localhost:8081/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
-      $.getJSON('https://locationserver.uswest2.development.volvo.care/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
+      $.getJSON('https://locationserver.uswest2.development.volvo.care/retrieve?search={"lat":'+ lat+',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
         shareLocations = data;
         console.log(data);
 
@@ -322,4 +282,106 @@ map.on('mouseleave', "shareLocationsDot", function() {
   popup.remove();
 });  
 
+function renderDistance(){
+  if (map.getSource('source_range_circle')){
 
+    if (map.getLayer('circleRange')){
+      map.removeLayer('circleRange')
+    }
+    map.removeSource('source_range_circle')
+  }
+
+  if (map.getSource('source_range_circle')) {
+    map.getSource('source_range_circle').setData({
+      "type": "geojson",
+      "data": {
+        "type": "FeatureCollection",
+        "features": [{
+          "type": "Feature",
+          "geometry": {
+            "type": "Point",
+            "coordinates": [lon, lat],
+          }
+        }]
+      }
+    });
+  } else{
+      map.addSource("source_range_circle", {
+      "type": "geojson",
+      "data": {
+       "type": "FeatureCollection",
+        "features": [{
+          "type": "Feature",
+         "geometry": {
+            "type": "Point",
+            "coordinates": [lon, lat],
+          }
+        }]
+      }
+    });
+  }
+
+  circleRange = map.getLayer('circleRange')
+  if (!(circleRange === undefined)) {
+
+    var radiusCircle = {
+      stops: [
+        [0, 0],
+        [20, metersToPixelsAtMaxZoom(distance, lat)]
+      ],
+      base: 2
+    }
+    map.setPaintProperty("circleRange", 'circle-radius', radiusCircle);
+
+  }else {
+    map.addLayer({
+      "id": "circleRange",
+      "type": "circle",
+      "source": "source_range_circle",
+      "paint": {
+        "circle-radius": {
+          stops: [
+            [0, 0],
+            [20, metersToPixelsAtMaxZoom(distance, lat)]
+          ],
+          base: 2
+        },
+        "circle-color": "white",
+        "circle-opacity": 0.3
+      }
+    });
+  }
+    //END to draw the gray range circle
+
+
+    if (map.getSource("shareLocationsDot")){
+
+    }else{
+      map.addLayer({
+        id: 'shareLocationsDot',
+        type: 'circle',
+        source: {
+          type: 'geojson',
+          data: {
+            type: "FeatureCollection",
+            features: shareLocations
+          }
+        },
+        filter: ['all', filterType],
+        paint: {
+          'circle-color': [
+            'match',
+            ['get', 'Icontype'],
+            'car', ['case',
+              ["<=", ['number', ['get', 'cabintemp']], 50], '#F87431',
+              ["<=", ['number', ['get', 'cabintemp']], 70], '#E55451',
+              ["<=", ['number', ['get', 'cabintemp']], 80], '#F778A1',
+              '#F87431'
+            ],
+            /* other */ '#1589FF' //bicycle
+          ],
+          "circle-radius": 3
+        }
+      });
+    }
+}
