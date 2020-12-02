@@ -22,7 +22,9 @@ const (
 const (
 	Bike int = iota
 	Car
-	Raccoon
+	Pedestrian
+	Truck
+	Skater
 )
 
 var (

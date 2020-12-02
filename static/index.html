@@ -30,6 +30,9 @@
                     <option value="noneObject" selected>--Please choose a type of object--</option>
                     <option value="carObject" selected>Car</option>
                     <option value="bicycleObject" selected>Bicycle</option>
+                    <option value="pedestrianObject" selected>Pedestrian</option>
+                    <option value="truckObject" selected>Truck</option>
+                    <option value="skaterObject" selected>Skater</option>
                 </select>
             </div>
             <div>
@@ -57,8 +60,8 @@
       fakeCoord = data
     });
 
-    //$.getJSON('http://localhost:8081/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
-    $.getJSON('https://locationserver.uswest2.development.volvo.care/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
+    $.getJSON('http://localhost:8081/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
+    //$.getJSON('https://locationserver.uswest2.development.volvo.care/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
       console.log(data);
       if(data == null) 
         shareLocations = [];

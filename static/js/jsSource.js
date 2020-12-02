@@ -9,7 +9,7 @@ var ambientTempInfo = [];
 var cabinTempInfo = [];
 var driverTempInfo = [];
 var UUIDorigin = [];
-var filterType = ['match', ['get', 'Icontype'], ["car","bicycle"], true, false];
+var filterType = ['match', ['get', 'Icontype'], ["car","bicycle","pedestrian","truck","skater"], true, false];
 var layerTypeObject = document.getElementById('layerTypeObject');
 var distanceItem = document.getElementById('distance');
 
@@ -156,12 +156,27 @@ map.on('load', function() {
   
   //Add change event on selection of car or bicycle in dropdown menu
   layerTypeObject.addEventListener('change', function(e) {
-    if(document.getElementById('layerTypeObject').value == "carObject")
+    console.log("here", document.getElementById('layerTypeObject').value);
+    if(document.getElementById('layerTypeObject').value == "carObject") {
       filterType = ['==', ['get', 'Icontype'], "car"];
-    else if(document.getElementById('layerTypeObject').value == "bicycleObject")
+    }
+    else if(document.getElementById('layerTypeObject').value == "bicycleObject") {
       filterType = ['==', ['get', 'Icontype'], "bicycle"];
-    else
-      filterType = ['match', ['get', 'Icontype'], ["car","bicycle"], true, false];
+    }
+    else if(document.getElementById('layerTypeObject').value == "pedestrianObject") {
+      filterType = ['==', ['get', 'Icontype'], "pedestrian"];
+    }
+    else if(document.getElementById('layerTypeObject').value == "truckObject") {
+      filterType = ['==', ['get', 'Icontype'], "truck"];
+    }
+    else if(document.getElementById('layerTypeObject').value == "skaterObject") {
+      filterType = ['==', ['get', 'Icontype'], "skater"];
+    }
+    else {
+      filterType = ['match', ['get', 'Icontype'], ["car","bicycle","truck","pedestrian","skater"], true, false];
+      console.log("filterType", filterType);
+    }
+
     map.setFilter('fakeCoord', ['all', filterType]);
     if(map.getLayer('shareLocationsDot')){
       map.setFilter('shareLocationsDot', ['all', filterType]);
@@ -178,8 +193,8 @@ map.on('load', function() {
       $.ajaxSetup({
         async: false
       });
-      //$.getJSON('http://localhost:8081/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
-      $.getJSON('https://locationserver.uswest2.development.volvo.care/retrieve?search={"lat":'+ lat+',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
+      $.getJSON('http://localhost:8081/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
+     // $.getJSON('https://locationserver.uswest2.development.volvo.care/retrieve?search={"lat":'+ lat+',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
         shareLocations = data;
         console.log(data);
 
@@ -372,13 +387,22 @@ function renderDistance(){
           'circle-color': [
             'match',
             ['get', 'Icontype'],
-            'car', ['case',
-              ["<=", ['number', ['get', 'cabintemp']], 50], '#F87431',
-              ["<=", ['number', ['get', 'cabintemp']], 70], '#E55451',
-              ["<=", ['number', ['get', 'cabintemp']], 80], '#F778A1',
+            'car',
               '#F87431'
-            ],
-            /* other */ '#1589FF' //bicycle
+            ,
+            'bicycle',
+              '#1589FF'
+            ,
+            'pedestrian',
+              '#12822F'
+            ,
+            'truck',
+              '#11FFF2'
+            ,
+            'skater',
+              '#433FFD'
+            ,
+            /*other*/ '#ccc'
           ],
           "circle-radius": 3
         }

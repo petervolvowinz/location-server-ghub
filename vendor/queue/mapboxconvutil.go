@@ -65,6 +65,12 @@ func getIconStr(vehicletype int) string {
 		return "bicycle"
 	case Car:
 		return "car"
+	case Pedestrian:
+		return "pededstrian"
+	case Truck:
+		return "truck"
+	case Skater:
+		return "skater"
 	default:
 		return "raccoon"
 	}

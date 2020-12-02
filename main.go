@@ -133,7 +133,7 @@ func ServeMap() error {
 func Dispose() {
 	for {
 		queue.Remove()
-		var sleep = time.Millisecond * 100
+		var sleep = time.Millisecond * 25
 		time.Sleep(sleep)
 	}
 }
