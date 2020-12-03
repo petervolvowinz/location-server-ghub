@@ -165,6 +165,8 @@ func RetrieveCollisionList_2(objecttype GPSLocation, timed int64, dist int64, de
 func Remove() {
 	// RemoveOldData()
 	removeLast()
+	removeLast()
+	removeLast()
 	log.Info("Q SIZE IS : ", GetQueueInstance().Size())
 }
 

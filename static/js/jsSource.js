@@ -241,7 +241,7 @@ map.on('load', function() {
         async: true
       });
     }
-  }, 3000);
+  }, 1000);
 
 
 });
@@ -394,7 +394,7 @@ function renderDistance(){
               '#1589FF'
             ,
             'pedestrian',
-              '#12822F'
+              '#AD623F'
             ,
             'truck',
               '#11FFF2'

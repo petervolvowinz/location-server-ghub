@@ -21,18 +21,20 @@
             </div> -->
             <div id="distanceInfo">
                 <label >What range distance (in m)?</label>
-                <input type="number" name="distance" id="distance" min="0" value="200" >
+                <input type="number" name="distance" id="distance" min="0" value="3000" >
             </div>
             <p></p>
             <div id="objectMenu">
                 <label >Select Type of Object:</label>
                 <select id='layerTypeObject' name='layerTypeObject'>
-                    <option value="noneObject" selected>--Please choose a type of object--</option>
+
+                    <option value="noneObject" selected>All(Car,Bike,Pedestrian,Truck,Skater) </option>
                     <option value="carObject" selected>Car</option>
                     <option value="bicycleObject" selected>Bicycle</option>
                     <option value="pedestrianObject" selected>Pedestrian</option>
-                    <option value="truckObject" selected>Truck</option>
+                    <option value="truckObject" class="trucks" selected>Truck</option>
                     <option value="skaterObject" selected>Skater</option>
+
                 </select>
             </div>
             <div>
@@ -49,7 +51,7 @@
   <script>
      var shareLocations = ""
     var fakeCoord = "";
-    var distance = 200;
+    var distance = 3000;
     var lon="-122.03455749999999", lat = "37.3871454";
 
      $.ajaxSetup({
