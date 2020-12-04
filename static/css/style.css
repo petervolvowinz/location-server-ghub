@@ -42,6 +42,20 @@ body {
     margin: 0 0 5px;
 }
 
+.cars{
+    color:#F87431
+}
+.skaters{
+    color:#433FFD
+}
+
+.bikes{
+    color:#1589FF
+}
+
+.pedestrians{
+    color:#11623F
+}
 .trucks {
     color:#11FFF2;
 }

@@ -5,7 +5,10 @@
 	<script src='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js'></script>
   <link href='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css' rel='stylesheet' />
   <link href='css/style.css' rel='stylesheet' type='text/css' />
-  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>  
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+  <script src="js/url.js"></script>
+
 </head>
 
 <body>
@@ -36,6 +39,7 @@
                     <option value="skaterObject" selected>Skater</option>
 
                 </select>
+
             </div>
             <div>
                 <p><label style="float: left;">Total cars: </label><pre id="totCars">  0</pre></p>
@@ -62,8 +66,7 @@
       fakeCoord = data
     });
 
-    $.getJSON('http://localhost:8081/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
-    //$.getJSON('https://locationserver.uswest2.development.volvo.care/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
+    $.getJSON(FetchURL(RETRIEVE_API)+'{"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
       console.log(data);
       if(data == null) 
         shareLocations = [];
@@ -76,8 +79,10 @@
       async: true
     });
   </script>
-    
+
+
   <script src="js/jsSource.js"></script>
+
     
 
 </body>

@@ -11,6 +11,7 @@ var driverTempInfo = [];
 var UUIDorigin = [];
 var filterType = ['match', ['get', 'Icontype'], ["car","bicycle","pedestrian","truck","skater"], true, false];
 var layerTypeObject = document.getElementById('layerTypeObject');
+var layerTypeObject2 = document.getElementById('layerTypeObject2');
 var distanceItem = document.getElementById('distance');
 
 var lat = 0
@@ -153,7 +154,8 @@ map.on('load', function() {
   geolocate.on('geolocate', function(e) {
 
   });
-  
+
+
   //Add change event on selection of car or bicycle in dropdown menu
   layerTypeObject.addEventListener('change', function(e) {
     console.log("here", document.getElementById('layerTypeObject').value);
@@ -193,8 +195,7 @@ map.on('load', function() {
       $.ajaxSetup({
         async: false
       });
-      $.getJSON('http://localhost:8081/retrieve?search={"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
-     // $.getJSON('https://locationserver.uswest2.development.volvo.care/retrieve?search={"lat":'+ lat+',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
+      $.getJSON(FetchURL(RETRIEVE_API)+'{"lat":'+ lat +',"lng":' + lon + ',"timespan":10,"distance":'+ distance +'}', function(data) {
         shareLocations = data;
         console.log(data);
 
@@ -394,7 +395,7 @@ function renderDistance(){
               '#1589FF'
             ,
             'pedestrian',
-              '#AD623F'
+              '#11623F'
             ,
             'truck',
               '#11FFF2'
