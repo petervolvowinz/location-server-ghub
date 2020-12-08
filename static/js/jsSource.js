@@ -158,26 +158,8 @@ map.on('load', function() {
 
   //Add change event on selection of car or bicycle in dropdown menu
   layerTypeObject.addEventListener('change', function(e) {
-    console.log("here", document.getElementById('layerTypeObject').value);
-    if(document.getElementById('layerTypeObject').value == "carObject") {
-      filterType = ['==', ['get', 'Icontype'], "car"];
-    }
-    else if(document.getElementById('layerTypeObject').value == "bicycleObject") {
-      filterType = ['==', ['get', 'Icontype'], "bicycle"];
-    }
-    else if(document.getElementById('layerTypeObject').value == "pedestrianObject") {
-      filterType = ['==', ['get', 'Icontype'], "pedestrian"];
-    }
-    else if(document.getElementById('layerTypeObject').value == "truckObject") {
-      filterType = ['==', ['get', 'Icontype'], "truck"];
-    }
-    else if(document.getElementById('layerTypeObject').value == "skaterObject") {
-      filterType = ['==', ['get', 'Icontype'], "skater"];
-    }
-    else {
-      filterType = ['match', ['get', 'Icontype'], ["car","bicycle","truck","pedestrian","skater"], true, false];
-      console.log("filterType", filterType);
-    }
+    filterType = ['match', ['get', 'Icontype'], $('#layerTypeObject').val(),true,false]
+    console.log(filterType)
 
     map.setFilter('fakeCoord', ['all', filterType]);
     if(map.getLayer('shareLocationsDot')){
