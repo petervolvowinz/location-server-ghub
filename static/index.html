@@ -3,11 +3,10 @@
 <head>
 	<title> My maps </title>
 	<script src='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js'></script>
-  <link href='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css' rel='stylesheet' />
-  <link href='css/style.css' rel='stylesheet' type='text/css' />
+    <link href='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css' rel='stylesheet' />
+    <link href='css/style.css' rel='stylesheet' type='text/css' />
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-
-  <script src="js/url.js"></script>
+    <script src="js/url.js"></script>
 
 </head>
 
@@ -18,32 +17,24 @@
     <div class='map-overlay-inner'>
         <h2>Share Location Platform</h2>
         <fieldset>
-            <!-- <div id="searchVINInfo">
-                <label >What VIN number do you want to search?</label>
-                <input type="text" name="vin" placeholder="ex. AAAAAAAAAAAAAAAAA" >
-            </div> -->
+
             <div id="distanceInfo">
                 <label >What range distance (in m)?</label>
                 <input type="number" name="distance" id="distance" min="0" value="3000" >
             </div>
             <p></p>
-            <div id="objectMenu">
-                <label >Select Type of Object:</label>
-                <select id='layerTypeObject' name='layerTypeObject' multiple='multiple'>
 
+            <div id="Menu">
+                <label >Select Type of Object:</label>
+                <select id='layerTypeObject' style="height: 90px" name='layerTypeObject' multiple='multiple'>
                     <option value="car" class="cars" selected>Car</option>
                     <option value="bicycle" class="bikes" selected>Bicycle</option>
                     <option value="pedestrian" class="pedestrians" selected>Pedestrian</option>
                     <option value="truck" class="trucks" selected>Truck</option>
                     <option value="skater" class="skaters" selected>Skater</option>
-
                 </select>
+            </div>
 
-            </div>
-            <div>
-                <p><label style="float: left;">Total cars: </label><pre id="totCars">  0</pre></p>
-                <p><label style="float: left;">Total bicycles: </label><pre id="totBicycle">  0</pre></p>
-            </div>
             <p></p>
             <p></p>
         </fieldset>

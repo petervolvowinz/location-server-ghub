@@ -138,7 +138,7 @@ map.on('load', function() {
   });
 
   //Count car and bike on fake gps data
-  fakeCoord.features.forEach(function(feature,rowIndex) {
+ /* fakeCoord.features.forEach(function(feature,rowIndex) {
     var IcontypeObject = feature.properties['Icontype'];     
 
     if(IcontypeObject == "car"){
@@ -148,7 +148,7 @@ map.on('load', function() {
       bicycleCount++;
   });
   document.getElementById("totCars").innerHTML = "  " + carCount;
-  document.getElementById("totBicycle").innerHTML = "  " + bicycleCount;
+  document.getElementById("totBicycle").innerHTML = "  " + bicycleCount;*/
 
   // geolocate.trigger();
   geolocate.on('geolocate', function(e) {
@@ -197,7 +197,7 @@ map.on('load', function() {
             if (!uuidMemberTest(newShareLocations,element.properties['UUID'])) {
               (function(dataelement){
                 newShareLocations.push(dataelement)
-                countCarsAndBikes(element.properties['Icontype'])
+               // countCarsAndBikes(element.properties['Icontype'])
               })(shareLocations[rowIndex]);
             }
 
@@ -216,8 +216,8 @@ map.on('load', function() {
           map.getSource('shareLocationsDot').setData(dataLayer);
         }
 
-        document.getElementById("totCars").innerHTML = "  " + (carCount + realCarCount);
-        document.getElementById("totBicycle").innerHTML = "  " + (bicycleCount + realBicycleCount);
+        //document.getElementById("totCars").innerHTML = "  " + (carCount + realCarCount);
+        //document.getElementById("totBicycle").innerHTML = "  " + (bicycleCount + realBicycleCount);
       });
 
       $.ajaxSetup({
