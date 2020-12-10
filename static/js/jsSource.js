@@ -110,10 +110,10 @@ map.on('load', function() {
         'match',
           ['get', 'Icontype'],
           'car',  [ 'case',
-            ["<=", ['number', ['get', 'cabintemp']], 50], '#F87431',
+            ["<=", ['number', ['get', 'cabintemp']], 50], '#E55451',
             ["<=", ['number', ['get', 'cabintemp']], 70], '#E55451',
-            ["<=", ['number', ['get', 'cabintemp']], 80], '#F778A1',
-            '#F87431'
+            ["<=", ['number', ['get', 'cabintemp']], 80], '#E55451',
+            '#E55451'
           ],
           /* other */ '#1589FF' //bicycle
       ],
@@ -371,7 +371,7 @@ function renderDistance(){
             'match',
             ['get', 'Icontype'],
             'car',
-              '#F87431'
+              '#E55451'
             ,
             'bicycle',
               '#1589FF'
